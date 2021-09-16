@@ -79,9 +79,9 @@ public class Wagon {
      */
     public void attachTail(Wagon tail) {
         // TODO verify the exceptions
-        if (this.hasNextWagon() || tail.hasPreviousWagon()) throw new IllegalStateException("attachTail Failed");
+        if (this.hasNextWagon() || tail.hasPreviousWagon()) throw new IllegalStateException();
         // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
-        tail.reAttachTo(this);
+        tail.previousWagon = this;
         nextWagon = tail;
     }
 
@@ -97,10 +97,8 @@ public class Wagon {
         try {
             return nextWagon;
         } finally {
-            if (this.hasNextWagon()) {
-                nextWagon.detachFront();
-                nextWagon = null;
-            }
+            if (this.hasNextWagon()) nextWagon.previousWagon = null; // is deze if nodig?
+            nextWagon = null;
         }
     }
 
@@ -113,15 +111,12 @@ public class Wagon {
      */
     public Wagon detachFront() {
         // TODO detach this wagon from its predecessor (sustaining the invariant propositions).
-        //   and return that predecessor
-
+        //  and return that predecessor
         try {
             return previousWagon;
         } finally {
-            if (this.hasPreviousWagon()) {
-                previousWagon.detachTail();
-                previousWagon = null;
-            }
+            if (this.hasPreviousWagon()) previousWagon.nextWagon = null;
+            previousWagon = null;
         }
     }
 
@@ -135,11 +130,11 @@ public class Wagon {
      */
     public void reAttachTo(Wagon front) {
         // TODO detach any existing connections that will be rearranged
-        if (this.hasPreviousWagon()) this.detachFront();
-        if (front.hasNextWagon()) front.detachTail();
+        if (front.hasNextWagon()) front.nextWagon = null;
+        if (this.hasPreviousWagon()) previousWagon = null;
         // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
-        front.attachTail(this);
         previousWagon = front;
+        front.nextWagon = this;
     }
 
     /**
@@ -148,6 +143,10 @@ public class Wagon {
      */
     public void removeFromSequence() {
         // TODO
+        if (this.hasPreviousWagon()) previousWagon.nextWagon = nextWagon;
+        if (this.hasNextWagon()) nextWagon.previousWagon = previousWagon;
+        nextWagon = null;
+        previousWagon = null;
     }
 
 
