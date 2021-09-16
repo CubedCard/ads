@@ -77,8 +77,11 @@ public class Wagon {
      */
     public void attachTail(Wagon tail) {
         // TODO verify the exceptions
-
+        if (this.hasNextWagon() || tail.hasPreviousWagon()) throw new IllegalStateException("attachTail Failed");
         // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
+
+        tail.reAttachTo(this);
+        nextWagon = tail;
     }
 
     /**
@@ -89,8 +92,13 @@ public class Wagon {
     public Wagon detachTail() {
         // TODO detach the tail from this wagon (sustaining the invariant propositions).
         //  and return the head wagon of that tail
-
-        return null;
+        try {
+            return nextWagon;
+        }
+        finally {
+            if (this.hasNextWagon()) nextWagon.detachFront();
+            nextWagon = null;
+        }
     }
 
     /**
@@ -103,7 +111,13 @@ public class Wagon {
         // TODO detach this wagon from its predecessor (sustaining the invariant propositions).
         //   and return that predecessor
 
-        return null;
+        try {
+            return previousWagon;
+        }
+        finally {
+            if (this.hasPreviousWagon()) previousWagon.detachTail();
+            previousWagon = null;
+        }
     }
 
     /**
@@ -115,8 +129,11 @@ public class Wagon {
      */
     public void reAttachTo(Wagon front) {
         // TODO detach any existing connections that will be rearranged
-
+        front.detachTail();
+        this.detachFront();
         // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
+        front.attachTail(this);
+        previousWagon = front;
     }
 
     /**
