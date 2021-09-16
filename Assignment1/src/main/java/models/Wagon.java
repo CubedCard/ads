@@ -1,6 +1,6 @@
 package models;
 
-public class Wagon {
+public abstract class Wagon {
     protected int id;               // some unique ID of a Wagon
     private Wagon nextWagon;        // another wagon that is appended at the tail of this wagon
     // a.k.a. the successor of this wagon in a sequence
@@ -79,7 +79,8 @@ public class Wagon {
      */
     public void attachTail(Wagon tail) {
         // TODO verify the exceptions
-        if (this.hasNextWagon() || tail.hasPreviousWagon()) throw new IllegalStateException();
+        if (this.hasNextWagon() || tail.hasPreviousWagon()) throw new IllegalStateException(String.format(
+                "These two can't be next attached to each other %s, %s", this, tail));
         // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
         tail.previousWagon = this;
         nextWagon = tail;
@@ -97,7 +98,7 @@ public class Wagon {
         try {
             return nextWagon;
         } finally {
-            if (this.hasNextWagon()) nextWagon.previousWagon = null; // is deze if nodig?
+            if (this.hasNextWagon()) nextWagon.previousWagon = null;
             nextWagon = null;
         }
     }
@@ -130,8 +131,14 @@ public class Wagon {
      */
     public void reAttachTo(Wagon front) {
         // TODO detach any existing connections that will be rearranged
-        if (front.hasNextWagon()) front.nextWagon = null;
-        if (this.hasPreviousWagon()) previousWagon = null;
+        if (front.hasNextWagon()) {
+            front.nextWagon.previousWagon = null;
+            front.nextWagon = null;
+        }
+        if (this.hasPreviousWagon()) {
+            previousWagon.nextWagon = null;
+            previousWagon = null;
+        }
         // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
         previousWagon = front;
         front.nextWagon = this;
@@ -160,9 +167,23 @@ public class Wagon {
     public Wagon reverseSequence() {
         // TODO provide an iterative implementation,
         //   using attach- and detach methods of this class
-
-        return null;
+//        try {
+//            return getLastWagonAttached();
+//        }
+//        finally {
+//            Wagon wagon = this;
+//            while (wagon != null) {
+//                Wagon temp = wagon.nextWagon.nextWagon;
+//                wagon.nextWagon.nextWagon = wagon;
+//                wagon.nextWagon.previousWagon = temp;
+//            }
+//        }
+        return getLastWagonAttached();
     }
 
     // TODO
+    @Override
+    public String toString() {
+        return String.format("[Wagon-%d]", id);
+    }
 }
