@@ -36,7 +36,7 @@ public class Wagon {
     public boolean hasNextWagon() {
         // TODO
 
-        return false;
+        return nextWagon != null;
     }
 
     /**
@@ -45,7 +45,7 @@ public class Wagon {
     public boolean hasPreviousWagon() {
         // TODO
 
-        return false;
+        return previousWagon != null;
     }
 
     /**
@@ -54,8 +54,8 @@ public class Wagon {
      */
     public Wagon getLastWagonAttached() {
         // TODO find the last wagon in the sequence
-
-        return null;
+        if (this.hasNextWagon()) return nextWagon.getLastWagonAttached();
+        return this;
     }
 
     /**
@@ -64,7 +64,7 @@ public class Wagon {
      */
     public int getTailLength() {
         // TODO traverse the tail and find its length
-
+        if (this.hasNextWagon()) return nextWagon.getTailLength() + 1;
         return 0;
     }
 
