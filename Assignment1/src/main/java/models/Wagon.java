@@ -3,18 +3,18 @@ package models;
 public class Wagon {
     protected int id;               // some unique ID of a Wagon
     private Wagon nextWagon;        // another wagon that is appended at the tail of this wagon
-                                    // a.k.a. the successor of this wagon in a sequence
-                                    // set to null if no successor is connected
+    // a.k.a. the successor of this wagon in a sequence
+    // set to null if no successor is connected
     private Wagon previousWagon;    // another wagon that is prepended at the front of this wagon
-                                    // a.k.a. the predecessor of this wagon in a sequence
-                                    // set to null if no predecessor is connected
+    // a.k.a. the predecessor of this wagon in a sequence
+    // set to null if no predecessor is connected
 
 
     // representation invariant propositions:
     // tail-connection-invariant:   wagon.nextWagon == null or wagon == wagon.nextWagon.previousWagon
     // front-connection-invariant:  wagon.previousWagon == null or wagon = wagon.previousWagon.nextWagon
 
-    public Wagon (int wagonId) {
+    public Wagon(int wagonId) {
         this.id = wagonId;
     }
 
@@ -31,7 +31,7 @@ public class Wagon {
     }
 
     /**
-     * @return  whether this wagon has a wagon appended at the tail
+     * @return whether this wagon has a wagon appended at the tail
      */
     public boolean hasNextWagon() {
         // TODO
@@ -40,7 +40,7 @@ public class Wagon {
     }
 
     /**
-     * @return  whether this wagon has a wagon prepended at the front
+     * @return whether this wagon has a wagon prepended at the front
      */
     public boolean hasPreviousWagon() {
         // TODO
@@ -50,7 +50,8 @@ public class Wagon {
 
     /**
      * Returns the last wagon attached to it, if there are no wagons attached to it then this wagon is the last wagon.
-     * @return  the wagon
+     *
+     * @return the wagon
      */
     public Wagon getLastWagonAttached() {
         // TODO find the last wagon in the sequence
@@ -59,7 +60,7 @@ public class Wagon {
     }
 
     /**
-     * @return  the length of the tail of wagons towards the end of the sequence
+     * @return the length of the tail of wagons towards the end of the sequence
      * excluding this wagon itself.
      */
     public int getTailLength() {
@@ -71,6 +72,7 @@ public class Wagon {
     /**
      * Attaches the tail wagon behind this wagon, if and only if this wagon has no wagon attached at its tail
      * and if the tail wagon has no wagon attached in front of it.
+     *
      * @param tail the wagon to attach behind this wagon.
      * @throws IllegalStateException if this wagon already has a wagon appended to it.
      * @throws IllegalStateException if tail is already attached to a wagon in front of it.
@@ -79,33 +81,35 @@ public class Wagon {
         // TODO verify the exceptions
         if (this.hasNextWagon() || tail.hasPreviousWagon()) throw new IllegalStateException("attachTail Failed");
         // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
-
         tail.reAttachTo(this);
         nextWagon = tail;
     }
 
     /**
      * Detaches the tail from this wagon and returns the first wagon of this tail.
+     *
      * @return the first wagon of the tail that has been detached
-     *          or <code>null</code> if it had no wagons attached to its tail.
+     * or <code>null</code> if it had no wagons attached to its tail.
      */
     public Wagon detachTail() {
         // TODO detach the tail from this wagon (sustaining the invariant propositions).
         //  and return the head wagon of that tail
         try {
             return nextWagon;
-        }
-        finally {
-            if (this.hasNextWagon()) nextWagon.detachFront();
-            nextWagon = null;
+        } finally {
+            if (this.hasNextWagon()) {
+                nextWagon.detachFront();
+                nextWagon = null;
+            }
         }
     }
 
     /**
      * Detaches this wagon from the wagon in front of it.
      * No action if this wagon has no previous wagon attached.
-     * @return  the former previousWagon that has been detached from,
-     *          or <code>null</code> if it had no previousWagon.
+     *
+     * @return the former previousWagon that has been detached from,
+     * or <code>null</code> if it had no previousWagon.
      */
     public Wagon detachFront() {
         // TODO detach this wagon from its predecessor (sustaining the invariant propositions).
@@ -113,10 +117,11 @@ public class Wagon {
 
         try {
             return previousWagon;
-        }
-        finally {
-            if (this.hasPreviousWagon()) previousWagon.detachTail();
-            previousWagon = null;
+        } finally {
+            if (this.hasPreviousWagon()) {
+                previousWagon.detachTail();
+                previousWagon = null;
+            }
         }
     }
 
@@ -125,12 +130,13 @@ public class Wagon {
      * Before such reconfiguration can be made,
      * the method first disconnects this wagon form its predecessor,
      * and the <code>front</code> wagon from its current tail.
+     *
      * @param front the wagon to which this wagon must be attached to.
      */
     public void reAttachTo(Wagon front) {
         // TODO detach any existing connections that will be rearranged
-        front.detachTail();
-        this.detachFront();
+        if (this.hasPreviousWagon()) this.detachFront();
+        if (front.hasNextWagon()) front.detachTail();
         // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
         front.attachTail(this);
         previousWagon = front;
@@ -149,6 +155,7 @@ public class Wagon {
      * Reverses the order in the sequence of wagons from this Wagon until its final successor.
      * The reversed sequence is attached again to the wagon in front of this Wagon, if any.
      * No action if this Wagon has no succeeding next wagon attached.
+     *
      * @return the new start Wagon of the reversed sequence (with is the former last Wagon of the original sequence)
      */
     public Wagon reverseSequence() {
