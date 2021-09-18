@@ -80,7 +80,7 @@ public abstract class Wagon {
     public void attachTail(Wagon tail) {
         // TODO verify the exceptions
         if (this.hasNextWagon() || tail.hasPreviousWagon()) throw new IllegalStateException(String.format(
-                "These two can't be next attached to each other %s, %s", this, tail));
+                "These two can't be attached to each other %s, %s", this, tail));
         // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
         tail.previousWagon = this;
         nextWagon = tail;
@@ -131,17 +131,19 @@ public abstract class Wagon {
      */
     public void reAttachTo(Wagon front) {
         // TODO detach any existing connections that will be rearranged
-        if (front.hasNextWagon()) {
-            front.nextWagon.previousWagon = null;
-            front.nextWagon = null;
+        if (front != null) {
+            if (front.hasNextWagon()) {
+                front.nextWagon.previousWagon = null;
+                front.nextWagon = null;
+            }
+            if (this.hasPreviousWagon()) {
+                previousWagon.nextWagon = null;
+                previousWagon = null;
+            }
+            // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
+            previousWagon = front;
+            front.nextWagon = this;
         }
-        if (this.hasPreviousWagon()) {
-            previousWagon.nextWagon = null;
-            previousWagon = null;
-        }
-        // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
-        previousWagon = front;
-        front.nextWagon = this;
     }
 
     /**
@@ -167,18 +169,23 @@ public abstract class Wagon {
     public Wagon reverseSequence() {
         // TODO provide an iterative implementation,
         //   using attach- and detach methods of this class
-//        try {
-//            return getLastWagonAttached();
-//        }
-//        finally {
-//            Wagon wagon = this;
-//            while (wagon != null) {
-//                Wagon temp = wagon.nextWagon.nextWagon;
-//                wagon.nextWagon.nextWagon = wagon;
-//                wagon.nextWagon.previousWagon = temp;
-//            }
-//        }
-        return getLastWagonAttached();
+        Wagon wagon1 = this;
+        Wagon wagon2 = nextWagon;
+
+        wagon1.nextWagon = null;
+        wagon1.previousWagon = wagon2;
+
+        // TODO (by Jip): when there is a previous wagon to this, then the sequence should be partially reversed
+        // [1,2,3,4]
+        // 3.reverseSequence() --> 1,2,4,3
+
+        while (wagon2 != null) {
+            wagon2.previousWagon = wagon2.nextWagon;
+            wagon2.nextWagon = wagon1;
+            wagon1 = wagon2;
+            wagon2 = wagon2.previousWagon;
+        }
+        return wagon1;
     }
 
     // TODO
