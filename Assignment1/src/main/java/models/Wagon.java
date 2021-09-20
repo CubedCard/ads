@@ -132,18 +132,12 @@ public abstract class Wagon {
     public void reAttachTo(Wagon front) {
         // TODO detach any existing connections that will be rearranged
         if (front != null) {
-            if (front.hasNextWagon()) {
-                front.nextWagon.previousWagon = null;
-                front.nextWagon = null;
-            }
-            if (this.hasPreviousWagon()) {
-                previousWagon.nextWagon = null;
-                previousWagon = null;
-            }
+            if (front.hasNextWagon()) front.nextWagon.previousWagon = null;
             // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
-            previousWagon = front;
             front.nextWagon = this;
         }
+        if (this.hasPreviousWagon()) previousWagon.nextWagon = null;
+        previousWagon = front;
     }
 
     /**
@@ -182,6 +176,8 @@ public abstract class Wagon {
         while (wagon2 != null) {
             wagon2.previousWagon = wagon2.nextWagon;
             wagon2.nextWagon = wagon1;
+//            wagon1.reAttachTo(wagon2);
+//            wagon2.reAttachTo(wagon2.nextWagon);
             wagon1 = wagon2;
             wagon2 = wagon2.previousWagon;
         }
