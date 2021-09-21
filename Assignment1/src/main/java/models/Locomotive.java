@@ -15,4 +15,9 @@ public class Locomotive {
     }
 
     // TODO
+
+    @Override
+    public String toString() {
+        return String.format("[Loc-%d]", locNumber);
+    }
 }
