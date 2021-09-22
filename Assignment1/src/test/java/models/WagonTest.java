@@ -89,7 +89,7 @@ public class WagonTest {
         t = assertThrows(IllegalStateException.class,
                 () -> { passengerWagon3.attachTail(passengerWagon2);}
         );
-        assertTrue(t.getMessage().contains(passengerWagon3.toString()), // I changed 1 to 3, ask teacher
+        assertTrue(t.getMessage().contains(passengerWagon1.toString()),
                 "Exception message should include the names of connected wagons");
         assertTrue(t.getMessage().contains(passengerWagon2.toString()),
                 "Exception message should include the names of connected wagons");
