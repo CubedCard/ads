@@ -11,9 +11,6 @@ public class Train {
         engine != null
      */
 
-    // TODO vragen leraar
-    // "Other changes are clarifications in the JavaDoc"?
-
     public Train(Locomotive engine, String origin, String destination) {
         this.engine = engine;
         this.destination = destination;
@@ -165,7 +162,7 @@ public class Train {
      */
     public boolean canAttach(Wagon wagon) {
         // TODO
-        if (wagon != null && engine.getMaxWagons() > getNumberOfWagons() && findWagonById(wagon.getId()) == null) {
+        if (wagon != null && engine.getMaxWagons() > (getNumberOfWagons() + wagon.getTailLength()) && findWagonById(wagon.getId()) == null) {
             if (hasWagons()) {
                 if (wagon instanceof FreightWagon) return isFreightTrain();
                 if (wagon instanceof PassengerWagon) return isPassengerTrain();
@@ -185,7 +182,7 @@ public class Train {
     public boolean attachToRear(Wagon wagon) {
         // TODO
         if (canAttach(wagon)) {
-            if (hasWagons()) getLastWagonAttached().attachTail(wagon);
+            if (hasWagons()) wagon.reAttachTo(getLastWagonAttached());
             else firstWagon = wagon;
             return true;
         }
@@ -204,8 +201,8 @@ public class Train {
     public boolean insertAtFront(Wagon wagon) {
         // TODO
         if (!canAttach(wagon)) return false;
-        if (hasWagons()) firstWagon.reAttachTo(wagon.getLastWagonAttached());
-        if (wagon.hasPreviousWagon()) wagon.detachFront();
+        if (hasWagons()) wagon.getLastWagonAttached().attachTail(firstWagon);
+        wagon.detachFront();
         firstWagon = wagon;
         return true;
     }
@@ -226,7 +223,7 @@ public class Train {
         if (current == null || !canAttach(wagon)) {
             return false;
         }
-        wagon.reAttachTo(current.getPreviousWagon());
+        wagon.reAttachTo(current.detachFront());
         current.reAttachTo(wagon.getLastWagonAttached());
         return true;
     }
@@ -243,22 +240,13 @@ public class Train {
      * @return whether the move could be completed successfully
      */
     public boolean moveOneWagon(int wagonId, Train toTrain) {
-        // TODO
-        // canAttach
-        // if true;
-        // CHECK: firstwagon
-        // TRUE: firstwagon = null
-        // FALSE: hasPrevious == true;
-        // maybe a detach
-        // attach to rear.
-        // if false return false
         Wagon wagonToMove = findWagonById(wagonId);
         if (toTrain.canAttach(wagonToMove)) {
-            if (firstWagon == wagonToMove) {
-                firstWagon = wagonToMove.getNextWagon();
-                wagonToMove.detachTail();
-            } else if (wagonToMove.hasNextWagon()) wagonToMove.getNextWagon().reAttachTo(wagonToMove.getPreviousWagon());
-            else wagonToMove.detachFront();
+            if (firstWagon == wagonToMove) firstWagon = wagonToMove.detachTail();
+            else {
+                if (wagonToMove.hasNextWagon()) wagonToMove.detachTail().reAttachTo(wagonToMove.detachFront());
+                else wagonToMove.detachFront();
+            }
             toTrain.attachToRear(wagonToMove);
             return true;
         }
