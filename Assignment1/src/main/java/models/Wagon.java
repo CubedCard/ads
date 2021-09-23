@@ -80,9 +80,9 @@ public abstract class Wagon {
     public void attachTail(Wagon tail) {
         // TODO verify the exceptions
         if (this.hasNextWagon()) throw new IllegalStateException(String.format(
-                "These two can't be attached to each other %s, %s", this, this.nextWagon));
+                "attach has failed because %s has a next wagon: %s", this, this.nextWagon));
         if (tail.hasPreviousWagon()) throw new IllegalStateException(String.format(
-                "These two can't be attached to each other %s, %s", tail, tail.previousWagon));
+                "attach has failed because %s has a previous wagon: %s", tail, tail.previousWagon));
         // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
         tail.previousWagon = this;
         nextWagon = tail;
