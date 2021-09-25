@@ -155,11 +155,16 @@ public abstract class Wagon {
             prev.detachTail();
             start = reverseSequenceFrom(this);
             start.reAttachTo(prev);
-        }
-        else start = reverseSequenceFrom(this);
+        } else start = reverseSequenceFrom(this);
         return start;
     }
 
+    /**
+     * Reverses the order in the sequence of wagons from this Wagon until its final successor.
+     *
+     * @param wagon the 'head' of the sequence that will be reversed
+     * @return the new 'head' of the sequence
+     */
     private Wagon reverseSequenceFrom(Wagon wagon) {
         Wagon wagon1 = wagon;
         Wagon wagon2 = wagon.nextWagon;
