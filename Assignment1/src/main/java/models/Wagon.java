@@ -34,8 +34,6 @@ public abstract class Wagon {
      * @return whether this wagon has a wagon appended at the tail
      */
     public boolean hasNextWagon() {
-        // TODO
-
         return nextWagon != null;
     }
 
@@ -43,8 +41,6 @@ public abstract class Wagon {
      * @return whether this wagon has a wagon prepended at the front
      */
     public boolean hasPreviousWagon() {
-        // TODO
-
         return previousWagon != null;
     }
 
@@ -54,8 +50,7 @@ public abstract class Wagon {
      * @return the wagon
      */
     public Wagon getLastWagonAttached() {
-        // TODO find the last wagon in the sequence
-        if (this.hasNextWagon()) return nextWagon.getLastWagonAttached();
+        if (hasNextWagon()) return nextWagon.getLastWagonAttached();
         return this;
     }
 
@@ -64,8 +59,7 @@ public abstract class Wagon {
      * excluding this wagon itself.
      */
     public int getTailLength() {
-        // TODO traverse the tail and find its length
-        if (this.hasNextWagon()) return nextWagon.getTailLength() + 1;
+        if (hasNextWagon()) return nextWagon.getTailLength() + 1;
         return 0;
     }
 
@@ -78,12 +72,10 @@ public abstract class Wagon {
      * @throws IllegalStateException if tail is already attached to a wagon in front of it.
      */
     public void attachTail(Wagon tail) {
-        // TODO verify the exceptions
         if (this.hasNextWagon()) throw new IllegalStateException(String.format(
                 "attach has failed because %s has a next wagon: %s", this, this.nextWagon));
         if (tail.hasPreviousWagon()) throw new IllegalStateException(String.format(
                 "attach has failed because %s has a previous wagon: %s", tail, tail.previousWagon));
-        // TODO attach the tail wagon to this wagon (sustaining the invariant propositions).
         tail.previousWagon = this;
         nextWagon = tail;
     }
@@ -95,12 +87,11 @@ public abstract class Wagon {
      * or <code>null</code> if it had no wagons attached to its tail.
      */
     public Wagon detachTail() {
-        // TODO detach the tail from this wagon (sustaining the invariant propositions).
-        //  and return the head wagon of that tail
+        // I chose to use 'try-finally' because I find it easier to read then when using a temporary Wagon
         try {
             return nextWagon;
         } finally {
-            if (this.hasNextWagon()) nextWagon.previousWagon = null;
+            if (hasNextWagon()) nextWagon.previousWagon = null;
             nextWagon = null;
         }
     }
@@ -113,12 +104,10 @@ public abstract class Wagon {
      * or <code>null</code> if it had no previousWagon.
      */
     public Wagon detachFront() {
-        // TODO detach this wagon from its predecessor (sustaining the invariant propositions).
-        //  and return that predecessor
         try {
             return previousWagon;
         } finally {
-            if (this.hasPreviousWagon()) previousWagon.nextWagon = null;
+            if (hasPreviousWagon()) previousWagon.nextWagon = null;
             previousWagon = null;
         }
     }
@@ -132,13 +121,11 @@ public abstract class Wagon {
      * @param front the wagon to which this wagon must be attached to.
      */
     public void reAttachTo(Wagon front) {
-        // TODO detach any existing connections that will be rearranged
         if (front != null) {
             if (front.hasNextWagon()) front.nextWagon.previousWagon = null;
-            // TODO attach this wagon to its new predecessor front (sustaining the invariant propositions).
             front.nextWagon = this;
         }
-        if (this.hasPreviousWagon()) previousWagon.nextWagon = null;
+        if (hasPreviousWagon()) previousWagon.nextWagon = null;
         previousWagon = front;
     }
 
@@ -147,7 +134,6 @@ public abstract class Wagon {
      * and reconnects its tail to the wagon in front of it, if it exists.
      */
     public void removeFromSequence() {
-        // TODO
         if (this.hasPreviousWagon()) previousWagon.nextWagon = nextWagon;
         if (this.hasNextWagon()) nextWagon.previousWagon = previousWagon;
         nextWagon = null;
@@ -190,7 +176,6 @@ public abstract class Wagon {
         return wagon1;
     }
 
-    // TODO
     @Override
     public String toString() {
         return String.format("[Wagon-%d]", id);
