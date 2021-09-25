@@ -166,6 +166,7 @@ public class Train {
      */
     public boolean attachToRear(Wagon wagon) {
         if (canAttach(wagon)) {
+            wagon.detachFront();
             if (hasWagons()) wagon.reAttachTo(getLastWagonAttached());
             else firstWagon = wagon;
             return true;
