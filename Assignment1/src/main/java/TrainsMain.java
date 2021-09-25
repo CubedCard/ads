@@ -24,7 +24,7 @@ public class TrainsMain {
 
         System.out.println("\nConfigurator result:");
 
-        Locomotive vanGogh = new Locomotive(63427, 6);
+        Locomotive vanGogh = new Locomotive(63427, 10);
         Train amsterdamLondon = new Train(vanGogh, "Amsterdam", "London");
         amsterdamParis.splitAtPosition(4, amsterdamLondon);
         amsterdamLondon.reverse();

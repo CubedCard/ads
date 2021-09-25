@@ -306,4 +306,16 @@ public class TrainTest {
         trainWithoutWagons.reverse();
         assertEquals(0, trainWithoutWagons.getNumberOfWagons());
     }
+
+    // My own tests
+
+    @Test
+    public void T19_CantMoveOneWagonToTrainWithValueNull() {
+        assertFalse(passengerTrain.moveOneWagon(8001, null));
+    }
+
+    @Test
+    public void T20_CantSplitAtPositionToTrainWithValueNull() {
+        assertFalse(passengerTrain.splitAtPosition(1, null));
+    }
 }
