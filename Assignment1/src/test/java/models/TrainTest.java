@@ -306,7 +306,7 @@ public class TrainTest {
         assertEquals(0, trainWithoutWagons.getNumberOfWagons());
     }
 
-    // My own tests
+    // Our self-made tests
 
     @Test
     public void T19_CantMoveOneWagonToTrainWithValueNull() {
