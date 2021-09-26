@@ -153,14 +153,14 @@ public abstract class Wagon {
         if (hasPreviousWagon()) {
             Wagon prev = previousWagon;
             prev.detachTail();
-            start = reverseSequenceFrom(this);
+            start = reverseRecursivelyFrom(this);
             start.reAttachTo(prev);
-        } else start = reverseSequenceFrom(this);
+        } else start = reverseRecursivelyFrom(this);
         return start;
     }
 
     /**
-     * Reverses the order in the sequence of wagons from this Wagon until its final successor.
+     * Reverses the order in the sequence of wagons iteratively from this Wagon until its final successor.
      *
      * @param wagon the 'head' of the sequence that will be reversed
      * @return the new 'head' of the sequence
@@ -179,6 +179,27 @@ public abstract class Wagon {
             wagon2 = wagon2.previousWagon;
         }
         return wagon1;
+    }
+
+    /**
+     * Reverses the order in the sequence of wagons recursively from this Wagon until its final successor.
+     * @param wagon the 'head' of the sequence that will be reversed
+     * @return the new 'head' of the sequence
+     */
+    private Wagon reverseRecursivelyFrom(Wagon wagon) {
+        if (wagon == null) return null;
+
+        // switch the next with the previous wagon and vice versa
+        Wagon oldNext = wagon.nextWagon;
+        wagon.nextWagon = wagon.previousWagon;
+        wagon.previousWagon = oldNext;
+
+        /*
+        if the wagon has a previous wagon of null (meaning that there is no 'oldNext')
+        this is the new head of the sequence
+        */
+        if (wagon.previousWagon == null) return wagon;
+        return reverseRecursivelyFrom(wagon.previousWagon);
     }
 
     @Override
