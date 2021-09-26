@@ -318,4 +318,9 @@ public class TrainTest {
     public void T20_CantSplitAtPositionToTrainWithValueNull() {
         assertFalse(passengerTrain.splitAtPosition(1, null));
     }
+
+    @Test
+    public void T21_CantSplitAtPositionWhenPositionIsOutOfBounds() {
+        assertFalse(passengerTrain.splitAtPosition(-1, new Train(new Locomotive(1030, 10), "Amsterdam", "Hamburg")));
+    }
 }
