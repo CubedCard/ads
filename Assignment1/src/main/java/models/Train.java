@@ -146,7 +146,8 @@ public class Train {
      * @return true if the sequence can be added and false if the sequence can't be added
      */
     public boolean canAttach(Wagon wagon) {
-        if (wagon != null && engine.getMaxWagons() > (getNumberOfWagons() + wagon.getTailLength()) && findWagonById(wagon.getId()) == null) {
+        if (wagon != null && engine.getMaxWagons() > (getNumberOfWagons()
+                + wagon.getTailLength()) && findWagonById(wagon.getId()) == null) {
             if (hasWagons()) {
                 if (wagon instanceof FreightWagon) return isFreightTrain();
                 if (wagon instanceof PassengerWagon) return isPassengerTrain();
