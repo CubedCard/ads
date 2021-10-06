@@ -46,6 +46,23 @@ public class OrderedArrayList<E>
     //  such that they sustain the representation invariant of OrderedArrayList
     //  (hint: only change nSorted as required to guarantee the representation invariant, do not invoke a sort)
 
+    @Override
+    public void add(int index, E element) {
+        nSorted = index;
+        super.add(index, element);
+    }
+
+    @Override
+    public E remove(int index) {
+        nSorted = index;
+        return super.remove(index);
+    }
+
+    @Override
+    public boolean remove(Object o) {
+        nSorted = this.size() - 1;
+        return super.remove(o);
+    }
 
     @Override
     public void sort() {

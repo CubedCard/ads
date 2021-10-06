@@ -23,12 +23,20 @@ public class Product {
      * or null if the textLine is corrupt or incomplete
      */
     public static Product fromLine(String textLine) {
-        Product newProduct;
+        Product newProduct = null;
         String[] splitText;
 
         splitText = textLine.split(", ");
 
-        newProduct = new Product(Long.parseLong(splitText[0]), splitText[1], Double.parseDouble(splitText[2]));
+        long barcode = 0L;
+        String title = null;
+        double price = 0;
+
+        if (splitText.length > 0) barcode = Long.parseLong(splitText[0]);
+        if (splitText.length > 1) title = splitText[1];
+        if (splitText.length > 2) price = Double.parseDouble(splitText[2]);
+
+        newProduct = new Product(barcode, title, price);
 
         return newProduct;
     }
@@ -57,7 +65,6 @@ public class Product {
     }
 
     // TODO add public and private methods as per your requirements
-
 
     @Override
     public String toString() {
