@@ -22,10 +22,6 @@ public class Purchase {
      */
     public static Purchase fromLine(String textLine, List<Product> products) {
         Purchase newPurchase = null;
-
-        // TODO convert the information in the textLine to a new Purchase instance
-        //  use the products.indexOf to find the product that is associated with the barcode of the purchase
-
         String[] splitText = textLine.split(", ");
 
         Product product1 = null;

@@ -84,7 +84,7 @@ public class OrderedArrayList<E>
     public int indexOfByBinarySearch(E searchItem) {
         if (searchItem != null) {
             // some arbitrary choice to use the iterative or the recursive version
-            return indexOfByRecursiveBinarySearch(searchItem);
+            return indexOfByIterativeBinarySearch(searchItem);
         } else {
             return -1;
         }
@@ -104,9 +104,34 @@ public class OrderedArrayList<E>
         // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
+        int l = 0, r = nSorted;
+
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+
+            E value = get(m);
+
+            // Check if searchItem is present at the middle
+            if (ordening.compare(value, searchItem) == 0)
+                return m;
+
+            // If searchItem greater, ignore left half
+            if (ordening.compare(value, searchItem) < 0)
+                l = m + 1;
+
+            // If searchItem is smaller, ignore right half
+            else
+                r = m - 1;
+        }
 
         // TODO if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
+        for (int i = nSorted; i < size(); i++) {
+            if (ordening.compare(get(i), searchItem) == 0) {
+                return i;
+            }
+        }
 
+        // if we reach here, then element was not present
         return -1;
     }
 
