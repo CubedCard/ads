@@ -187,6 +187,7 @@ public class OrderedArrayList<E>
     @Override
     public boolean merge(E newItem, BinaryOperator<E> merger) {
         if (newItem == null) return false;
+        // TODO change the linearSearch to RecursiveBinarySearch
         int matchedItemIndex = this.linearSearch(newItem);
 
         if (matchedItemIndex < 0) {
