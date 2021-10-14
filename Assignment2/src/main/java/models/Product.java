@@ -64,7 +64,9 @@ public class Product {
         return this.getBarcode() == ((Product) other).getBarcode();
     }
 
-    // TODO add public and private methods as per your requirements
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     @Override
     public String toString() {

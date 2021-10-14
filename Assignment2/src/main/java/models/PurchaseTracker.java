@@ -2,10 +2,7 @@ package models;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
 import java.util.function.Function;
 
 public class PurchaseTracker {
@@ -17,10 +14,13 @@ public class PurchaseTracker {
     public PurchaseTracker() {
         // TODO initialize products and purchases with an empty ordered list which sorts items by barcode.
         //  Use your generic implementation class OrderedArrayList
+        products = new OrderedArrayList<>((o1, o2) -> (int) (o1.getBarcode() - o2.getBarcode()));
+        purchases = new OrderedArrayList<>((o1, o2) -> (int) (o1.getBarcode() - o2.getBarcode()));
     }
 
     /**
      * imports all products from a resource file that is common to all branches of the Supermarket chain
+     *
      * @param resourceName
      */
     public void importProductsFromVault(String resourceName) {
@@ -39,6 +39,7 @@ public class PurchaseTracker {
 
     /**
      * imports and merges all raw purchase data of all branches from the hierarchical file structure of the vault
+     *
      * @param resourceName
      */
     public void importPurchasesFromVault(String resourceName) {
@@ -52,6 +53,7 @@ public class PurchaseTracker {
 
     /**
      * traverses the purchases vault recursively and processes every data file that it finds
+     *
      * @param filePath
      */
     private void mergePurchasesFromFileRecursively(String filePath) {
@@ -64,7 +66,9 @@ public class PurchaseTracker {
             File[] filesInDirectory = Objects.requireNonNullElse(file.listFiles(), new File[0]);
 
             // TODO merge all purchases of all files and sub folders from the filesInDirectory list, recursively.
-
+            for (File nextFile : filesInDirectory) {
+                mergePurchasesFromFileRecursively(nextFile.getPath());
+            }
 
         } else if (file.getName().matches(PURCHASE_FILE_PATTERN)) {
             // the file is a regular file that matches the target pattern for raw purchase files
@@ -75,9 +79,10 @@ public class PurchaseTracker {
 
     /**
      * show the top n purchases according to the ranking criterium specified by ranker
-     * @param n             the number of top purchases to be shown
-     * @param subTitle      some title text that clarifies the list
-     * @param ranker        the comparator used to rank the purchases
+     *
+     * @param n        the number of top purchases to be shown
+     * @param subTitle some title text that clarifies the list
+     * @param ranker   the comparator used to rank the purchases
      */
     public void showTops(int n, String subTitle, Comparator<Purchase> ranker) {
         System.out.printf("%d purchases with %s:\n", n, subTitle);
@@ -90,7 +95,7 @@ public class PurchaseTracker {
 
         // show the top items
         for (int rank = 0; rank < n && rank < tops.size(); rank++) {
-            System.out.printf("%d: %s\n", rank+1, tops.get(rank));
+            System.out.printf("%d: %s\n", rank + 1, tops.get(rank));
         }
     }
 
@@ -101,20 +106,21 @@ public class PurchaseTracker {
         // TODO provide the mappers to calculate the specified aggregated quantities
         System.out.printf("Total volume of all purchases: %.0f\n",
 
-                null);
+                purchases.aggregate(Purchase::getCount));
         System.out.printf("Total revenue from all purchases: %.2f\n",
 
-                null);
+                purchases.aggregate(Purchase::getCount) * products.aggregate(Product::getPrice));
     }
 
     /**
      * imports a collection of items from a text file which provides one line for each item
-     * @param items         the list to which imported items shall be added
-     * @param filePath      the file path of the source text file
-     * @param converter     a function that can convert a text line into a new item instance
-     * @param <E>           the (generic) type of each item
+     *
+     * @param items     the list to which imported items shall be added
+     * @param filePath  the file path of the source text file
+     * @param converter a function that can convert a text line into a new item instance
+     * @param <E>       the (generic) type of each item
      */
-    public static <E> void importItemsFromFile(List<E> items, String filePath, Function<String,E> converter) {
+    public static <E> void importItemsFromFile(List<E> items, String filePath, Function<String, E> converter) {
         int originalNumItems = items.size();
 
         Scanner scanner = createFileScanner(filePath);
@@ -135,6 +141,7 @@ public class PurchaseTracker {
     /**
      * imports another batch of raw purchase data from the filePath text file
      * and merges the purchase amounts with the earlier imported and accumulated collection in this.purchases
+     *
      * @param filePath
      */
     private void mergePurchasesFromFile(String filePath) {
@@ -148,22 +155,26 @@ public class PurchaseTracker {
 
         // TODO import all purchases from the specified file into the newPurchases list
         importItemsFromFile(newPurchases, filePath,
-                null
+                Purchase::fromLineWithoutProducts
         );
 
         // TODO merge all purchases from the newPurchases list into this.purchases
         for (Purchase purchase : newPurchases) {
             this.purchases.merge(purchase,
-                    null
+                    (p1, p2) -> {
+                        p1.addCount(p2.getCount());
+                        return p1;
+                    }
             );
         }
 
         int addedCount = purchases.size() - originalNumPurchases;
-        //System.out.printf("Merged %d, added %d new purchases from %s.\n", newPurchases.size() - addedCount, addedCount, filePath);
+        System.out.printf("Merged %d, added %d new purchases from %s.\n", newPurchases.size() - addedCount, addedCount, filePath);
     }
 
     /**
-     * helper method to create a scanner on a file an handle the exception
+     * helper method to create a scanner on a file and handle the exception
+     *
      * @param filePath
      * @return
      */
