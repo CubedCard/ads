@@ -48,8 +48,11 @@ public class OrderedArrayList<E>
 
     @Override
     public void add(int index, E element) {
-        if (index <= nSorted) nSorted++;
-        super.add(index, element);
+        if (index >= nSorted && index < size()) {
+            super.add(index, element);
+        } else if (index > 0 && index < nSorted) {
+            super.add(size() - 1, element);
+        }
     }
 
     @Override
@@ -84,7 +87,7 @@ public class OrderedArrayList<E>
     public int indexOfByBinarySearch(E searchItem) {
         if (searchItem != null) {
             // some arbitrary choice to use the iterative or the recursive version
-            return linearSearch(searchItem);
+            return indexOfByIterativeBinarySearch(searchItem);
         } else {
             return -1;
         }
@@ -128,8 +131,7 @@ public class OrderedArrayList<E>
     }
 
     private int linearSearch(E searchItem) {
-        // TODO use nSorted instead of 0
-        for (int i = 0; i < size(); i++) { // temporary
+        for (int i = nSorted - 1; i < size(); i++) {
             if (ordening.compare(get(i), searchItem) == 0) {
                 return i;
             }
@@ -148,7 +150,6 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
-        System.out.println(nSorted);
         return recursiveBinarySearch(searchItem, 0, nSorted);
     }
 
@@ -187,8 +188,7 @@ public class OrderedArrayList<E>
     @Override
     public boolean merge(E newItem, BinaryOperator<E> merger) {
         if (newItem == null) return false;
-        // TODO change the linearSearch to RecursiveBinarySearch
-        int matchedItemIndex = this.linearSearch(newItem);
+        int matchedItemIndex = this.indexOfByIterativeBinarySearch(newItem);
 
         if (matchedItemIndex < 0) {
             this.add(newItem);
