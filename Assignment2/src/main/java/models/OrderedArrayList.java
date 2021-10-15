@@ -87,7 +87,7 @@ public class OrderedArrayList<E>
     public int indexOfByBinarySearch(E searchItem) {
         if (searchItem != null) {
             // some arbitrary choice to use the iterative or the recursive version
-            return indexOfByIterativeBinarySearch(searchItem);
+            return indexOfByRecursiveBinarySearch(searchItem);
         } else {
             return -1;
         }
@@ -107,25 +107,28 @@ public class OrderedArrayList<E>
         // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
-        if (size() == 0 || nSorted == 0) {
-            return linearSearch(searchItem, nSorted - 1);
+        if (size() == 0) {
+            return - 1;
         }
 
-        int l = 0, r = nSorted;
+        if (nSorted == 0) {
+            return linearSearch(searchItem, 0);
+        }
+
+        int l = 0, r = nSorted - 1;
 
         while (l <= r) {
             int m = l + (r - l) / 2;
 
-            E value = get(m);
-
-            // Check if searchItem is present at the middle
-            if (ordening.compare(value, searchItem) == 0) {
+            // Check if x is present at mid
+            if (ordening.compare(get(m), searchItem) == 0)
                 return m;
-            }
-            // If searchItem greater, ignore left half
-            if (ordening.compare(value, searchItem) < 0)
+
+            // If x greater, ignore left half
+            if (ordening.compare(get(m), searchItem) < 0)
                 l = m + 1;
-                // If searchItem is smaller, ignore right half
+
+            // If x is smaller, ignore right half
             else
                 r = m - 1;
         }
@@ -159,28 +162,27 @@ public class OrderedArrayList<E>
     public int indexOfByRecursiveBinarySearch(E searchItem) {
         return linearSearch(searchItem, 0);
 //        if (size() == 0) return -1;
-//        if (nSorted == 0) return linearSearch(searchItem, nSorted);
-//        return recursiveBinarySearch(searchItem, 0, nSorted);
+//        return recursiveBinarySearch(searchItem, 0, nSorted - 1);
     }
 
-    private int recursiveBinarySearch(E searchItem, int left, int right) {
-        if (left > right) {
-            return linearSearch(searchItem, nSorted);
+    private int recursiveBinarySearch(E searchItem, int l, int r) {
+        if (r >= l) {
+            int mid = l + (r - l) / 2;
+
+            // If the element is present at the middle itself
+            if (ordening.compare(get(mid), searchItem) == 0)
+                return mid;
+
+            // If element is smaller than mid, then it can only be present in left subarray
+            if (ordening.compare(get(mid), searchItem) > 0)
+                return recursiveBinarySearch(searchItem, l, mid - 1);
+
+            // Else the element can only be present in right subarray
+            return recursiveBinarySearch(searchItem, mid + 1, r);
         }
 
-        int m = left + (right - left) / 2;
-        E value = get(m);
-
-        // Check if searchItem is present at the middle
-        if (ordening.compare(value, searchItem) == 0) {
-            return m;
-        }
-        // If searchItem greater, ignore left half
-        if (ordening.compare(value, searchItem) < 0)
-            return recursiveBinarySearch(searchItem, m + 1, right);
-            // If searchItem is smaller, ignore right half
-        else
-            return recursiveBinarySearch(searchItem, left, m - 1);
+        // We reach here when element is not present in array
+        return linearSearch(searchItem, nSorted - 1);
     }
 
     /**

@@ -32,8 +32,6 @@ public class OrderedArrayListTest {
 
     @Test
     public void TestBinarySearch() {
-        // when there is no sorted part, the index of should return -1
-        assertEquals(-1, products.indexOfByBinarySearch(product1));
         // sort is necessary for Binary Search
         products.sort();
         // after the sort, product1 should be in the second position

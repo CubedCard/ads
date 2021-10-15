@@ -153,7 +153,7 @@ public class PurchaseTracker {
 
         // TODO import all purchases from the specified file into the newPurchases list
         importItemsFromFile(newPurchases, filePath,
-                Purchase::fromLineWithoutProducts
+                this::fromLine
         );
 
         // TODO merge all purchases from the newPurchases list into this.purchases
@@ -190,5 +190,9 @@ public class PurchaseTracker {
 
     public List<Purchase> getPurchases() {
         return purchases;
+    }
+
+    private Purchase fromLine(String textLine) {
+        return Purchase.fromLine(textLine, this.products);
     }
 }

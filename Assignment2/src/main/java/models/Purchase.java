@@ -27,7 +27,13 @@ public class Purchase {
         Product product1 = null;
         int count = 0;
 
-        if (splitText.length > 0) product1 = products.get(products.indexOf(new Product(Long.parseLong(splitText[0]))));
+        int index = products.indexOf(new Product(Long.parseLong(splitText[0])));
+
+        if (index < 0) {
+            return null;
+        }
+
+        product1 = products.get(index);
         if (splitText.length > 1) count = Integer.parseInt(splitText[1]);
 
         if (product1 != null) newPurchase = new Purchase(product1, count);
