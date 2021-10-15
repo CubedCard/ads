@@ -107,6 +107,10 @@ public class OrderedArrayList<E>
         // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
+        if (size() == 0) {
+            return -1;
+        }
+
         int l = 0, r = nSorted;
 
         while (l <= r) {
@@ -131,9 +135,11 @@ public class OrderedArrayList<E>
     }
 
     private int linearSearch(E searchItem) {
-        for (int i = nSorted - 1; i < size(); i++) {
-            if (ordening.compare(get(i), searchItem) == 0) {
-                return i;
+        if (nSorted > 0) {
+            for (int i = nSorted - 1; i < size(); i++) {
+                if (ordening.compare(get(i), searchItem) == 0) {
+                    return i;
+                }
             }
         }
         return -1;
@@ -150,6 +156,9 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
+        if (size() == 0) {
+            return -1;
+        }
         return recursiveBinarySearch(searchItem, 0, nSorted);
     }
 
@@ -188,7 +197,7 @@ public class OrderedArrayList<E>
     @Override
     public boolean merge(E newItem, BinaryOperator<E> merger) {
         if (newItem == null) return false;
-        int matchedItemIndex = this.indexOfByIterativeBinarySearch(newItem);
+        int matchedItemIndex = this.indexOfByRecursiveBinarySearch(newItem);
 
         if (matchedItemIndex < 0) {
             this.add(newItem);

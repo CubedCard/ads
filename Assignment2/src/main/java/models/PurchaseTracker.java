@@ -103,12 +103,9 @@ public class PurchaseTracker {
      * shows total volume and total revenue sales statistics
      */
     public void showTotals() {
-        // TODO provide the mappers to calculate the specified aggregated quantities
         System.out.printf("Total volume of all purchases: %.0f\n",
-
                 purchases.aggregate(Purchase::getCount));
         System.out.printf("Total revenue from all purchases: %.2f\n",
-
                 purchases.aggregate(Purchase::getCount) * products.aggregate(Product::getPrice));
     }
 
