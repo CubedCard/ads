@@ -29,4 +29,14 @@ public class OrderedArrayListTest {
         product4 = new Product(202020202020202L, "pindakaas", 2.25);
         product5 = new Product(303030303030303L, "paprika", 0.85);
     }
+
+    @Test
+    public void TestBinarySearch() {
+        // when there is no sorted part, the index of should return -1
+        assertEquals(-1, products.indexOfByBinarySearch(product1));
+        // sort is necessary for Binary Search
+        products.sort();
+        // after the sort, product1 should be in the second position
+        assertEquals(1, products.indexOfByBinarySearch(product1));
+    }
 }

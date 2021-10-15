@@ -107,7 +107,7 @@ public class OrderedArrayList<E>
         // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
-        if (size() == 0) {
+        if (size() == 0 || nSorted == 0) {
             return -1;
         }
 
@@ -156,7 +156,7 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
-        if (size() == 0) {
+        if (size() == 0 || nSorted == 0) {
             return -1;
         }
         return recursiveBinarySearch(searchItem, 0, nSorted);

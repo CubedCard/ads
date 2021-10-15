@@ -69,16 +69,22 @@ public class Purchase {
     // TODO add public and private methods as per your requirements
 
     public static Purchase fromLineWithoutProducts(String textLine) {
-        Purchase newPurchase = null;
+        Purchase newPurchase;
         String[] splitText = textLine.split(", ");
 
-        Product product1 = null;
-        int count = 0;
+        Product product1;
+        int count;
 
-        if (splitText.length > 0) product1 = new Product(Long.parseLong(splitText[0]));
-        if (splitText.length > 1) count = Integer.parseInt(splitText[1]);
+        if (splitText.length < 2) {
+            return null;
+        }
 
-        if (product1 != null) newPurchase = new Purchase(product1, count);
+        if (splitText[0].isEmpty() || splitText[1].isEmpty()) return null;
+
+        product1 = new Product(Long.parseLong(splitText[0]));
+        count = Integer.parseInt(splitText[1]);
+
+        newPurchase = new Purchase(product1, count);
 
         return newPurchase;
     }
