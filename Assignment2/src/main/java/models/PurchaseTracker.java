@@ -133,7 +133,7 @@ public class PurchaseTracker {
             // TODO add the item to the list of items
             if (newLine != null) items.add(newLine);
         }
-        System.out.printf("Imported %d items from %s.\n", items.size() - originalNumItems, filePath);
+//        System.out.printf("Imported %d items from %s.\n", items.size() - originalNumItems, filePath);
     }
 
     /**
@@ -167,7 +167,7 @@ public class PurchaseTracker {
         }
 
         int addedCount = purchases.size() - originalNumPurchases;
-        System.out.printf("Merged %d, added %d new purchases from %s.\n", newPurchases.size() - addedCount, addedCount, filePath);
+//        System.out.printf("Merged %d, added %d new purchases from %s.\n", newPurchases.size() - addedCount, addedCount, filePath);
     }
 
     /**

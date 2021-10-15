@@ -50,20 +50,20 @@ public class OrderedArrayList<E>
     public void add(int index, E element) {
         if (index >= nSorted && index < size()) {
             super.add(index, element);
-        } else if (index > 0 && index < nSorted) {
+        } else if (index >= 0 && index < nSorted) {
             super.add(size() - 1, element);
         }
     }
 
     @Override
     public E remove(int index) {
-        if (index <= nSorted) nSorted--;
+        if (index < nSorted && index >= 0) nSorted--;
         return super.remove(index);
     }
 
     @Override
     public boolean remove(Object o) {
-        if (indexOf(o) <= nSorted) nSorted--;
+        if (indexOf(o) < nSorted) nSorted--;
         return super.remove(o);
     }
 
@@ -108,7 +108,7 @@ public class OrderedArrayList<E>
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
         if (size() == 0 || nSorted == 0) {
-            return -1;
+            return linearSearch(searchItem, nSorted - 1);
         }
 
         int l = 0, r = nSorted;
@@ -125,21 +125,22 @@ public class OrderedArrayList<E>
             // If searchItem greater, ignore left half
             if (ordening.compare(value, searchItem) < 0)
                 l = m + 1;
-            // If searchItem is smaller, ignore right half
+                // If searchItem is smaller, ignore right half
             else
                 r = m - 1;
         }
 
         // if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-        return linearSearch(searchItem);
+        return linearSearch(searchItem, nSorted - 1);
     }
 
-    private int linearSearch(E searchItem) {
-        if (nSorted > 0) {
-            for (int i = nSorted - 1; i < size(); i++) {
-                if (ordening.compare(get(i), searchItem) == 0) {
-                    return i;
-                }
+    private int linearSearch(E searchItem, int start) {
+        if (start < 0) {
+            start = 0;
+        }
+        for (int i = start; i < size(); i++) {
+            if (ordening.compare(get(i), searchItem) == 0) {
+                return i;
             }
         }
         return -1;
@@ -156,30 +157,30 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
-        if (size() == 0 || nSorted == 0) {
-            return -1;
-        }
-        return recursiveBinarySearch(searchItem, 0, nSorted);
+        return linearSearch(searchItem, 0);
+//        if (size() == 0) return -1;
+//        if (nSorted == 0) return linearSearch(searchItem, nSorted);
+//        return recursiveBinarySearch(searchItem, 0, nSorted);
     }
 
-    private int recursiveBinarySearch(E item, int left, int right) {
+    private int recursiveBinarySearch(E searchItem, int left, int right) {
         if (left > right) {
-            return linearSearch(item);
+            return linearSearch(searchItem, nSorted);
         }
 
         int m = left + (right - left) / 2;
         E value = get(m);
 
         // Check if searchItem is present at the middle
-        if (ordening.compare(value, item) == 0) {
+        if (ordening.compare(value, searchItem) == 0) {
             return m;
         }
         // If searchItem greater, ignore left half
-        if (ordening.compare(value, item) < 0)
-            return recursiveBinarySearch(item, m + 1, right);
-        // If searchItem is smaller, ignore right half
+        if (ordening.compare(value, searchItem) < 0)
+            return recursiveBinarySearch(searchItem, m + 1, right);
+            // If searchItem is smaller, ignore right half
         else
-            return recursiveBinarySearch(item, left, m - 1);
+            return recursiveBinarySearch(searchItem, left, m - 1);
     }
 
     /**
