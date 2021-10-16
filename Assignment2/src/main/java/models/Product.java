@@ -28,11 +28,14 @@ public class Product {
 
         splitText = textLine.split(", ");
 
+        // the textLine needs to have at least one element in it, to create a product
         if (splitText.length > 0) {
-            long barcode = Long.parseLong(splitText[0]);
+            long barcode = Long.parseLong(splitText[0]); // parse the first value to a long for the barcode
+            // title and price are not "NOT NULL"
             String title = null;
             double price = 0;
-            if (splitText.length > 1) title = splitText[1];
+            if (splitText.length > 1) title = splitText[1]; // if there is another item in the array, assign it to title
+            // if there is another item in the array, assign it to the price
             if (splitText.length > 2) price = Double.parseDouble(splitText[2]);
 
             newProduct = new Product(barcode, title, price);
