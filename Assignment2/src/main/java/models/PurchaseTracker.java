@@ -103,10 +103,14 @@ public class PurchaseTracker {
      * shows total volume and total revenue sales statistics
      */
     public void showTotals() {
+        double totalRevenue = 0;
+        for (Purchase purchase : this.purchases) {
+            totalRevenue += purchase.getCount() * purchase.getProduct().getPrice();
+        }
         System.out.printf("Total volume of all purchases: %.0f\n",
                 purchases.aggregate(Purchase::getCount));
         System.out.printf("Total revenue from all purchases: %.2f\n",
-                purchases.aggregate(Purchase::getCount) * products.aggregate(Product::getPrice));
+                totalRevenue);
     }
 
     /**

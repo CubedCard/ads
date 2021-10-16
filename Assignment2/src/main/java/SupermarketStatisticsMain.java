@@ -15,20 +15,17 @@ public class SupermarketStatisticsMain {
         purchaseTracker.importPurchasesFromVault("/purchases");
 
         // TODO provide the comparators that can order the purchases by specified criteria
-        Comparator<Purchase> compareByRevenue =
-                (o1, o2) -> (int) (o1.getCount() * o1.getProduct().getPrice() - (o2.getCount() * o2.getProduct().getPrice()));
-
         Comparator<Purchase> compareByValue =
-                (o1, o2) -> {
-                    o1.addCount(o2.getCount());
-                    return o1.getCount();
-                };
+                Comparator.comparingInt(Purchase::getCount);
+
+        Comparator<Purchase> compareByRevenue =
+                (o1, o2) -> (int) ((int) (o1.getCount() * o1.getProduct().getPrice()) - (o2.getCount() * o2.getProduct().getPrice()));
 
         purchaseTracker.showTops(5, "worst sales volume",
                 compareByValue
         );
         purchaseTracker.showTops(5, "best sales revenue",
-                compareByRevenue
+                compareByRevenue.reversed()
         );
 
         purchaseTracker.showTotals();

@@ -63,7 +63,8 @@ public class OrderedArrayList<E>
 
     @Override
     public boolean remove(Object o) {
-        if (indexOf(o) < nSorted) nSorted--;
+        int index = indexOf(o);
+        if (index < nSorted && index >= 0) nSorted--;
         return super.remove(o);
     }
 
@@ -108,11 +109,11 @@ public class OrderedArrayList<E>
         //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
 
         if (size() == 0) {
-            return - 1;
+            return -1;
         }
 
         if (nSorted == 0) {
-            return linearSearch(searchItem, 0);
+            return linearSearch(searchItem, nSorted);
         }
 
         int l = 0, r = nSorted - 1;
@@ -134,7 +135,7 @@ public class OrderedArrayList<E>
         }
 
         // if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-        return linearSearch(searchItem, nSorted - 1);
+        return linearSearch(searchItem, nSorted);
     }
 
     private int linearSearch(E searchItem, int start) {
@@ -182,7 +183,7 @@ public class OrderedArrayList<E>
         }
 
         // We reach here when element is not present in array
-        return linearSearch(searchItem, nSorted - 1);
+        return linearSearch(searchItem, nSorted);
     }
 
     /**
