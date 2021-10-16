@@ -21,24 +21,21 @@ public class Purchase {
      * or null if the textLine is corrupt or incomplete
      */
     public static Purchase fromLine(String textLine, List<Product> products) {
-        Purchase newPurchase = null;
         String[] splitText = textLine.split(", ");
 
         Product product1;
         int count = 0;
-
+        // get the index of the product in the array with the same barcode as the given barcode
         int index = products.indexOf(new Product(Long.parseLong(splitText[0])));
 
-        if (index < 0) {
-            return null;
-        }
+        if (index < 0)
+            return null; // product not found
 
         product1 = products.get(index);
+        // if the textLine contains another item, it will be assigned to the count
         if (splitText.length > 1) count = Integer.parseInt(splitText[1]);
 
-        if (product1 != null) newPurchase = new Purchase(product1, count);
-
-        return newPurchase;
+        return new Purchase(product1, count);
     }
 
     /**
