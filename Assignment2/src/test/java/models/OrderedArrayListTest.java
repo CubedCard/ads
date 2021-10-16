@@ -32,6 +32,8 @@ public class OrderedArrayListTest {
 
     @Test
     public void TestBinarySearch() {
+        // since the OrderedArrayList is not sorted, product1 should be at position 0 (see BeforeEach)
+        assertEquals(0, products.indexOfByBinarySearch(product1));
         // sort is necessary for Binary Search
         products.sort();
         // after the sort, product1 should be in the second position
