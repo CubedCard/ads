@@ -126,7 +126,7 @@ public class OrderedArrayList<E>
             if (ordening.compare(get(mid), searchItem) < 0)
                 left = mid + 1;
 
-            // If searchItem is smaller, ignore right half
+                // If searchItem is smaller, ignore right half
             else
                 right = mid;
         }
@@ -139,7 +139,7 @@ public class OrderedArrayList<E>
      * This method will try to find a given item using linear search
      *
      * @param searchItem the item that needs to be found
-     * @param start the starting index in the list
+     * @param start      the starting index in the list
      * @return the index that was found or -1 if no index was found
      */
     private int linearSearch(E searchItem, int start) {
@@ -176,8 +176,8 @@ public class OrderedArrayList<E>
      * This method tries to find an item recursively
      *
      * @param searchItem the item to be found
-     * @param from the index from which the method needs to search
-     * @param to the index to which the method needs to search
+     * @param from       the index from which the method needs to search
+     * @param to         the index to which the method needs to search
      * @return the found index of searchItem or -1 if no index was found
      */
     private int recursiveBinarySearch(E searchItem, int from, int to) {

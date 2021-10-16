@@ -63,7 +63,7 @@ public class PurchaseTracker {
             //  retrieve a list of all files and sub folders in this directory
             File[] filesInDirectory = Objects.requireNonNullElse(file.listFiles(), new File[0]);
 
-            for (File nextFile : filesInDirectory) {
+            for (File nextFile : filesInDirectory) { // check again for every file/directory in this directory
                 mergePurchasesFromFileRecursively(nextFile.getPath());
             }
 
@@ -100,10 +100,12 @@ public class PurchaseTracker {
      * shows total volume and total revenue sales statistics
      */
     public void showTotals() {
+        // calculate the total revenue of all the purchases combined
         double totalRevenue = 0;
         for (Purchase purchase : this.purchases) {
             totalRevenue += purchase.getCount() * purchase.getProduct().getPrice();
         }
+
         System.out.printf("Total volume of all purchases: %.0f\n",
                 purchases.aggregate(Purchase::getCount));
         System.out.printf("Total revenue from all purchases: %.2f\n",
@@ -126,7 +128,9 @@ public class PurchaseTracker {
         while (scanner.hasNext()) {
             // input another line with author information
             String line = scanner.nextLine();
+            // convert the line to type E, using the given converter
             E newLine = converter.apply(line);
+            // if the converter isn't null, the element will be added to the array
             if (newLine != null) items.add(newLine);
         }
 //        System.out.printf("Imported %d items from %s.\n", items.size() - originalNumItems, filePath);
@@ -153,6 +157,7 @@ public class PurchaseTracker {
 
         for (Purchase purchase : newPurchases) {
             this.purchases.merge(purchase,
+                    // this binary operator will be used when an item needs to be merged with another item
                     (p1, p2) -> {
                         p1.addCount(p2.getCount());
                         return p1;
@@ -186,6 +191,12 @@ public class PurchaseTracker {
         return purchases;
     }
 
+    /**
+     * This method tries to create a purchase with the local products array
+     *
+     * @param textLine the line to be converted to a purchase instance
+     * @return the purchase if the creation was successful, and otherwise null
+     */
     private Purchase fromLine(String textLine) {
         return Purchase.fromLine(textLine, this.products);
     }
