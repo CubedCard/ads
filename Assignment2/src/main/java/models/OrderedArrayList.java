@@ -44,15 +44,19 @@ public class OrderedArrayList<E>
 
     @Override
     public void add(int index, E element) {
+        // when the index is from nSorted to size, it will be added at the give index
         if (index >= nSorted && index < size()) {
             super.add(index, element);
-        } else if (index >= 0 && index < nSorted) {
+        }
+        // when the index is inside the sorted section, the element will be added at the end
+        else if (index >= 0 && index < nSorted) {
             super.add(size() - 1, element);
         }
     }
 
     @Override
     public E remove(int index) {
+        // when the index is inside the sorted section of the array, the variable nSorted needs to be adjusted
         if (index < nSorted && index >= 0) nSorted--;
         return super.remove(index);
     }
@@ -60,6 +64,7 @@ public class OrderedArrayList<E>
     @Override
     public boolean remove(Object o) {
         int index = indexOf(o);
+        // when the index is inside the sorted section of the array, the variable nSorted needs to be adjusted
         if (index < nSorted && index >= 0) nSorted--;
         return super.remove(o);
     }
@@ -83,7 +88,7 @@ public class OrderedArrayList<E>
     @Override
     public int indexOfByBinarySearch(E searchItem) {
         if (searchItem != null) {
-            // some arbitrary choice to use the iterative or the recursive version
+            // when looking at the time stamps of the tests, the times didn't vary that much
             return indexOfByIterativeBinarySearch(searchItem);
         } else {
             return -1;
@@ -102,10 +107,10 @@ public class OrderedArrayList<E>
      */
     public int indexOfByIterativeBinarySearch(E searchItem) {
         if (size() == 0) {
-            return -1;
+            return -1; // there are no items to search for
         }
         if (nSorted == 0) {
-            return linearSearch(searchItem, nSorted);
+            return linearSearch(searchItem, nSorted); // there is no sorted section, so a linear search is necessary
         }
 
         int left = 0, right = nSorted;
@@ -113,7 +118,7 @@ public class OrderedArrayList<E>
         while (left < right) {
             int mid = (left + right) / 2;
 
-            // Check if searchItem is present at mid
+            // Check if searchItem is present at the middle
             if (ordening.compare(get(mid), searchItem) == 0)
                 return mid;
 
@@ -130,13 +135,20 @@ public class OrderedArrayList<E>
         return linearSearch(searchItem, nSorted - 1);
     }
 
+    /**
+     * This method will try to find a given item using linear search
+     *
+     * @param searchItem the item that needs to be found
+     * @param start the starting index in the list
+     * @return the index that was found or -1 if no index was found
+     */
     private int linearSearch(E searchItem, int start) {
         if (start < 0) {
-            start = 0;
+            start = 0; // a negative index will return an IndexOutOfBoundsException
         }
         for (int i = start; i < size(); i++) {
             if (ordening.compare(searchItem, get(i)) == 0) {
-                return i;
+                return i; // when the searchItem is equal to the item at the index, the index will be returned
             }
         }
         return -1;
@@ -155,11 +167,19 @@ public class OrderedArrayList<E>
     public int indexOfByRecursiveBinarySearch(E searchItem) {
         int index = recursiveBinarySearch(searchItem, 0, nSorted - 1);
         if (index == -1) {
-            index = linearSearch(searchItem, nSorted);
+            index = linearSearch(searchItem, nSorted - 1);
         }
         return index;
     }
 
+    /**
+     * This method tries to find an item recursively
+     *
+     * @param searchItem the item to be found
+     * @param from the index from which the method needs to search
+     * @param to the index to which the method needs to search
+     * @return the found index of searchItem or -1 if no index was found
+     */
     private int recursiveBinarySearch(E searchItem, int from, int to) {
         if (nSorted > 0 && size() > 0) {
             int mid = (from + to) / 2;
@@ -176,7 +196,7 @@ public class OrderedArrayList<E>
             if (ordening.compare(get(mid), searchItem) > 0)
                 return recursiveBinarySearch(searchItem, from, mid - 1);
 
-            // else searchItem is greater than mid, so it can only be present in right half
+                // else searchItem is greater than mid, so it can only be present in right half
             else
                 return recursiveBinarySearch(searchItem, mid + 1, to);
         }
@@ -190,7 +210,7 @@ public class OrderedArrayList<E>
      * i.e. the found match is replaced by the outcome of the merge between the match and the newItem
      * If no match is found in the list, the newItem is added to the list.
      *
-     * @param newItem
+     * @param newItem the item that will be added or merged
      * @param merger  a function that takes two items and returns an item that contains the merged content of
      *                the two items according to some merging rule.
      *                e.g. a merger could add the value of attribute X of the second item
@@ -202,12 +222,14 @@ public class OrderedArrayList<E>
         if (newItem == null) return false;
         int matchedItemIndex = this.indexOfByRecursiveBinarySearch(newItem);
 
+        // when no index was found, the item is not yet in the OrderedArrayList and will be added
         if (matchedItemIndex < 0) {
             this.add(newItem);
             return true;
         } else {
+            // when an index was found, an attribute of the array will be merged with the newItem
             E matchedItem = get(matchedItemIndex);
-            set(matchedItemIndex, merger.apply(matchedItem, newItem));
+            set(matchedItemIndex, merger.apply(matchedItem, newItem)); // set the found item to the merged item
             return false;
         }
     }

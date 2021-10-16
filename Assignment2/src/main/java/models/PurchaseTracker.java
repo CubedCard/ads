@@ -12,8 +12,6 @@ public class PurchaseTracker {
     private OrderedList<Purchase> purchases;      // the aggregated volumes of all purchases of all products across all branches
 
     public PurchaseTracker() {
-        // TODO initialize products and purchases with an empty ordered list which sorts items by barcode.
-        //  Use your generic implementation class OrderedArrayList
         products = new OrderedArrayList<>(Comparator.comparing(Product::getBarcode));
         purchases = new OrderedArrayList<>(Comparator.comparing(Purchase::getBarcode));
     }
@@ -65,7 +63,6 @@ public class PurchaseTracker {
             //  retrieve a list of all files and sub folders in this directory
             File[] filesInDirectory = Objects.requireNonNullElse(file.listFiles(), new File[0]);
 
-            // TODO merge all purchases of all files and sub folders from the filesInDirectory list, recursively.
             for (File nextFile : filesInDirectory) {
                 mergePurchasesFromFileRecursively(nextFile.getPath());
             }
@@ -126,15 +123,10 @@ public class PurchaseTracker {
 
         Scanner scanner = createFileScanner(filePath);
 
-        // TODO read all source lines from the scanner,
-        //  convert each line to an item of type E and
-        //  and add each item to the list
         while (scanner.hasNext()) {
             // input another line with author information
             String line = scanner.nextLine();
-            // TODO convert the line to an instance of E
             E newLine = converter.apply(line);
-            // TODO add the item to the list of items
             if (newLine != null) items.add(newLine);
         }
 //        System.out.printf("Imported %d items from %s.\n", items.size() - originalNumItems, filePath);
@@ -155,12 +147,10 @@ public class PurchaseTracker {
         // re-sort the accumulated purchases for efficient searching
         this.purchases.sort();
 
-        // TODO import all purchases from the specified file into the newPurchases list
         importItemsFromFile(newPurchases, filePath,
                 this::fromLine
         );
 
-        // TODO merge all purchases from the newPurchases list into this.purchases
         for (Purchase purchase : newPurchases) {
             this.purchases.merge(purchase,
                     (p1, p2) -> {
