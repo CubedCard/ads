@@ -14,7 +14,6 @@ public class SupermarketStatisticsMain {
 
         purchaseTracker.importPurchasesFromVault("/purchases");
 
-        // TODO provide the comparators that can order the purchases by specified criteria
         Comparator<Purchase> compareByValue =
                 Comparator.comparingInt(Purchase::getCount);
 

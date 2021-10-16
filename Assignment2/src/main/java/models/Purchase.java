@@ -24,7 +24,7 @@ public class Purchase {
         Purchase newPurchase = null;
         String[] splitText = textLine.split(", ");
 
-        Product product1 = null;
+        Product product1;
         int count = 0;
 
         int index = products.indexOf(new Product(Long.parseLong(splitText[0])));

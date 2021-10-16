@@ -42,10 +42,6 @@ public class OrderedArrayList<E>
         this.nSorted = this.size();
     }
 
-    // TODO override the ArrayList.add(index, item), ArrayList.remove(index) and Collection.remove(object) methods
-    //  such that they sustain the representation invariant of OrderedArrayList
-    //  (hint: only change nSorted as required to guarantee the representation invariant, do not invoke a sort)
-
     @Override
     public void add(int index, E element) {
         if (index >= nSorted && index < size()) {
@@ -88,7 +84,7 @@ public class OrderedArrayList<E>
     public int indexOfByBinarySearch(E searchItem) {
         if (searchItem != null) {
             // some arbitrary choice to use the iterative or the recursive version
-            return indexOfByRecursiveBinarySearch(searchItem);
+            return indexOfByIterativeBinarySearch(searchItem);
         } else {
             return -1;
         }
@@ -105,37 +101,33 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByIterativeBinarySearch(E searchItem) {
-        // TODO implement an iterative binary search on the sorted section of the arrayList, 0 <= index < nSorted
-        //   to find the position of an item that matches searchItem (this.ordening comparator yields a 0 result)
-
         if (size() == 0) {
             return -1;
         }
-
         if (nSorted == 0) {
             return linearSearch(searchItem, nSorted);
         }
 
-        int l = 0, r = nSorted - 1;
+        int left = 0, right = nSorted;
 
-        while (l <= r) {
-            int m = l + (r - l) / 2;
+        while (left < right) {
+            int mid = (left + right) / 2;
 
-            // Check if x is present at mid
-            if (ordening.compare(get(m), searchItem) == 0)
-                return m;
+            // Check if searchItem is present at mid
+            if (ordening.compare(get(mid), searchItem) == 0)
+                return mid;
 
-            // If x greater, ignore left half
-            if (ordening.compare(get(m), searchItem) < 0)
-                l = m + 1;
+            // If searchItem greater, ignore left half
+            if (ordening.compare(get(mid), searchItem) < 0)
+                left = mid + 1;
 
-            // If x is smaller, ignore right half
+            // If searchItem is smaller, ignore right half
             else
-                r = m - 1;
+                right = mid;
         }
 
         // if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
-        return linearSearch(searchItem, nSorted);
+        return linearSearch(searchItem, nSorted - 1);
     }
 
     private int linearSearch(E searchItem, int start) {
@@ -143,7 +135,7 @@ public class OrderedArrayList<E>
             start = 0;
         }
         for (int i = start; i < size(); i++) {
-            if (ordening.compare(get(i), searchItem) == 0) {
+            if (ordening.compare(searchItem, get(i)) == 0) {
                 return i;
             }
         }
@@ -161,29 +153,36 @@ public class OrderedArrayList<E>
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
     public int indexOfByRecursiveBinarySearch(E searchItem) {
-        return linearSearch(searchItem, 0);
-//        if (size() == 0) return -1;
-//        return recursiveBinarySearch(searchItem, 0, nSorted - 1);
+        int index = recursiveBinarySearch(searchItem, 0, nSorted - 1);
+        if (index == -1) {
+            index = linearSearch(searchItem, nSorted);
+        }
+        return index;
     }
 
-    private int recursiveBinarySearch(E searchItem, int l, int r) {
-        if (r >= l) {
-            int mid = l + (r - l) / 2;
+    private int recursiveBinarySearch(E searchItem, int from, int to) {
+        if (nSorted > 0 && size() > 0) {
+            int mid = (from + to) / 2;
 
-            // If the element is present at the middle itself
+            // if the searchItem is exactly in the middle of from and to
             if (ordening.compare(get(mid), searchItem) == 0)
                 return mid;
 
-            // If element is smaller than mid, then it can only be present in left subarray
-            if (ordening.compare(get(mid), searchItem) > 0)
-                return recursiveBinarySearch(searchItem, l, mid - 1);
+            // if from is greater than to, then the searchItem was not found
+            if (from > to)
+                return -1;
 
-            // Else the element can only be present in right subarray
-            return recursiveBinarySearch(searchItem, mid + 1, r);
+            // if searchItem is smaller than mid, then it can only be present in left half
+            if (ordening.compare(get(mid), searchItem) > 0)
+                return recursiveBinarySearch(searchItem, from, mid - 1);
+
+            // else searchItem is greater than mid, so it can only be present in right half
+            else
+                return recursiveBinarySearch(searchItem, mid + 1, to);
         }
 
-        // We reach here when element is not present in array
-        return linearSearch(searchItem, nSorted);
+        // if no match was found, attempt a linear search of searchItem in the section nSorted <= index < size()
+        return -1;
     }
 
     /**
