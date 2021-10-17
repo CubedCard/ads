@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * This class tests the capabilities of the OrderedArrayList class
  *
- * @author jipderksen
+ * @author jipderksen & Yaël de Vries
  */
 public class OrderedArrayListTest {
     OrderedList<Product> products;

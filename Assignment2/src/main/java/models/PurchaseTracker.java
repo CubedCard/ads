@@ -157,11 +157,11 @@ public class PurchaseTracker {
 
         for (Purchase purchase : newPurchases) {
             this.purchases.merge(purchase,
-                    // this binary operator will be used when an item needs to be merged with another item
-                    (p1, p2) -> {
-                        p1.addCount(p2.getCount());
-                        return p1;
-                    }
+                // this binary operator will be used when an item needs to be merged with another item
+                (p1, p2) -> {
+                    p1.addCount(p2.getCount());
+                    return p1;
+                }
             );
         }
 
