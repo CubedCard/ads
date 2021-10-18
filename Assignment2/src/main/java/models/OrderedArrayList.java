@@ -9,7 +9,7 @@ public class OrderedArrayList<E>
         implements OrderedList<E> {
 
     protected Comparator<? super E> ordening;   // the comparator that has been used with the latest sort
-    protected int nSorted;                      // the number of items that have been ordered by barcode in the list
+    private int nSorted;                        // the number of items that have been ordered by barcode in the list
     // representation-invariant
     //      all items at index positions 0 <= index < nSorted have been ordered by the given ordening comparator
     //      other items at index position nSorted <= index < size() can be in any order amongst themselves
@@ -44,7 +44,7 @@ public class OrderedArrayList<E>
 
     @Override
     public void add(int index, E element) {
-        // when the index is from nSorted to size, it will be added at the give index
+        // when the index is from nSorted to size, it will be added at the given index
         if (index >= nSorted && index < size()) {
             super.add(index, element);
         }
@@ -105,7 +105,7 @@ public class OrderedArrayList<E>
      * @param searchItem the item to be searched on the basis of comparison by this.ordening
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
-    public int indexOfByIterativeBinarySearch(E searchItem) {
+    private int indexOfByIterativeBinarySearch(E searchItem) {
         if (size() == 0) {
             return -1; // there are no items to search for
         }
@@ -164,7 +164,7 @@ public class OrderedArrayList<E>
      * @param searchItem the item to be searched on the basis of comparison by this.ordening
      * @return the position index of the found item in the arrayList, or -1 if no item matches the search item.
      */
-    public int indexOfByRecursiveBinarySearch(E searchItem) {
+    private int indexOfByRecursiveBinarySearch(E searchItem) {
         int index = recursiveBinarySearch(searchItem, 0, nSorted - 1);
         if (index == -1) {
             index = linearSearch(searchItem, nSorted - 1);
