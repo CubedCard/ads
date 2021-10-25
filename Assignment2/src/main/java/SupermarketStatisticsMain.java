@@ -2,6 +2,7 @@ import models.Purchase;
 import models.PurchaseTracker;
 
 import java.util.Comparator;
+import java.util.Locale;
 
 public class SupermarketStatisticsMain {
 
