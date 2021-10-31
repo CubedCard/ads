@@ -1,15 +1,17 @@
 package nl.hva.ict.ads;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Archer {
     public static int MAX_ARROWS = 3;
     public static int MAX_ROUNDS = 10;
 
-
-    private int id;         // TODO Once assigned a value is not allowed to change.
-    private String firstName;
-    private String lastName;
-
-    // TODO add instance variable(s) to track the scores per round per arrow
+    private static int identifier = 135788;
+    private final int id;
+    private final String firstName;
+    private final String lastName;
+    private final Map<Integer, int[]> scores;
 
     /**
      * Constructs a new instance of Archer and assigns a unique id to the instance.
@@ -17,47 +19,72 @@ public class Archer {
      * The first instance created should have ID 135788;
      *
      * @param firstName the archers first name.
-     * @param lastName the archers surname.
+     * @param lastName  the archers surname.
      */
     public Archer(String firstName, String lastName) {
-        // TODO initialise the new archer
-        //  generate and assign an new unique id
-        //  initialise the scores of the archer
+        this.id = Archer.identifier++;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.scores = new HashMap<>();
+
+        int[] scoresArrows = new int[Archer.MAX_ARROWS];
+
+        for (int i = 0; i < Archer.MAX_ROUNDS; i++) {
+            for (int j = 0; j < Archer.MAX_ARROWS; j++) scoresArrows[j] = (int) Math.floor(Math.random() * 11);
+            this.registerScoreForRound(i + 1, scoresArrows);
+            scoresArrows = new int[Archer.MAX_ARROWS];
+        }
     }
 
     /**
      * Registers the points for each of the three arrows that have been shot during a round.
      *
-     * @param round the round for which to register the points. First round has number 1.
+     * @param round  the round for which to register the points. First round has number 1.
      * @param points the points shot during the round, one for each arrow.
      */
     public void registerScoreForRound(int round, int[] points) {
-        // TODO register the points into the archer's data structure for scores.
+        scores.put(round, points);
     }
 
 
     /**
      * Calculates/retrieves the total score of all arrows across all rounds
-     * @return
+     *
+     * @return the total scored points
      */
     public int getTotalScore() {
-        // TODO calculate/get the total score that the archer has earned across all arrows of all registered rounds
-
-        return 0;
+        int totalScore = 0;
+        for (int i = 0; i < Archer.MAX_ROUNDS; i++) {
+            for (int score : scores.get(i)) {
+                totalScore += score;
+            }
+        }
+        return totalScore;
     }
 
     /**
      * compares the scores/id of this archer with the scores/id of the other archer according to
      * the scoring scheme: highest total points -> least misses -> earliest registration
      * The archer with the lowest id has registered first
-     * @param other     the other archer to compare against
-     * @return  negative number, zero or positive number according to Comparator convention
+     *
+     * @param other the other archer to compare against
+     * @return negative number, zero or positive number according to Comparator convention
      */
     public int compareByHighestTotalScoreWithLeastMissesAndLowestId(Archer other) {
-        // TODO compares the scores/id of this archer with the other archer
-        //  and return the result according to Comparator conventions
+        if (this.getTotalScore() != other.getTotalScore()) return this.getTotalScore() - other.getTotalScore();
 
-        return 0;
+        int timesScoredZeroCurrent = 0;
+        int timesScoredZeroOther = 0;
+
+        for (int i = 0; i < MAX_ROUNDS; i++) {
+            for (int score : this.getScores().get(i)) if (score == 0) timesScoredZeroCurrent++;
+            for (int score : other.getScores().get(i)) if (score == 0) timesScoredZeroOther++;
+        }
+
+        // The smaller id is an earlier register
+        if (timesScoredZeroCurrent == timesScoredZeroOther) return other.getId() - this.getId();
+
+        return timesScoredZeroCurrent - timesScoredZeroOther;
     }
 
     public int getId() {
@@ -72,5 +99,14 @@ public class Archer {
         return lastName;
     }
 
-    // TODO provide a toSting implementation to format archers nicely
+    public Map<Integer, int[]> getScores() {
+        return scores;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%d (%d) %s %s",
+                getId(), getTotalScore(), getFirstName(), getLastName()
+        );
+    }
 }
