@@ -58,9 +58,46 @@ public class SorterImpl<E> implements Sorter<E> {
      * @return the items sorted in place (then why is this a void method?)
      */
     private void quickSortPart(List<E> items, int from, int to, Comparator<E> comparator) {
+        if (from < to) {
+            // get the index of the pivot
+            int pivot = partition(items, from, to, comparator);
+            // sort left half from pivot
+            quickSortPart(items, from, pivot - 1, comparator);
+            // sort right half from pivot
+            quickSortPart(items, pivot + 1, to, comparator);
+        }
+    }
 
-        // TODO quick sort the sublist of items between index positions 'from' and 'to' inclusive
+    /**
+     * This method finds the pivot item and then pivots the items[from...to] around it.
+     * Meaning larger and smaller on their own side.
+     *
+     * @param items      the list of items to be (partly) sorted
+     * @param from       from which index to sort the list
+     * @param to         to which index to sort the list
+     * @param comparator the function that is used to compare items with each other
+     * @return the (new) index of the pivot item
+     */
+    private int partition(List<E> items, int from, int to, Comparator<E> comparator) {
+        int low = from + 1;
+        int high = to;
+        E pivot = items.get(from);
 
+        do {
+            // ignore the items that don't need to be pivoted
+            while (low <= high && (comparator.compare(items.get(low), pivot) < 0)) low++;
+            while (low <= high && (comparator.compare(items.get(high), pivot) > 0)) high--;
+            if (low <= high) {
+                // switch the items
+                items.set(low, items.set(high, items.get(low)));
+                low++;
+                high--;
+            }
+        } while (low <= high);
+
+        // put the pivot item in its place
+        items.set(from, items.set(high, pivot));
+        return high;
     }
 
     /**
