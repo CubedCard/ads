@@ -16,7 +16,7 @@ public class SorterImpl<E> implements Sorter<E> {
      */
     public List<E> selInsSort(List<E> items, Comparator<E> comparator) {
         for (int i = 1; i < items.size(); ++i) {
-            E insertItem = items.get(i); // this item is selected to be inserted in the sorted part of the array
+            E insertItem = items.get(i); // the first unsorted item in the list
             int j = i - 1;
             // loop back through the array till the found item isn't smaller than the item to be inserted
             while (j >= 0 && (comparator.compare(items.get(j), insertItem) > 0)) {
