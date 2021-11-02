@@ -1,5 +1,6 @@
 package nl.hva.ict.ads;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,11 +30,11 @@ public class Archer {
 
         int[] scoresArrows = new int[Archer.MAX_ARROWS];
 
-        for (int i = 0; i < Archer.MAX_ROUNDS; i++) {
-            for (int j = 0; j < Archer.MAX_ARROWS; j++) scoresArrows[j] = (int) Math.floor(Math.random() * 11);
-            this.registerScoreForRound(i + 1, scoresArrows);
-            scoresArrows = new int[Archer.MAX_ARROWS];
-        }
+//        for (int i = 0; i < Archer.MAX_ROUNDS; i++) {
+//            for (int j = 0; j < Archer.MAX_ARROWS; j++) scoresArrows[j] = (int) Math.floor(Math.random() * 11);
+//            this.registerScoreForRound(i + 1, scoresArrows);
+//            scoresArrows = new int[Archer.MAX_ARROWS];
+//        }
     }
 
     /**
@@ -43,7 +44,7 @@ public class Archer {
      * @param points the points shot during the round, one for each arrow.
      */
     public void registerScoreForRound(int round, int[] points) {
-        scores.put(round, points);
+        scores.put(round, Arrays.copyOf(points, points.length));
     }
 
 
@@ -54,9 +55,11 @@ public class Archer {
      */
     public int getTotalScore() {
         int totalScore = 0;
-        for (int i = 0; i < Archer.MAX_ROUNDS; i++) {
-            for (int score : scores.get(i)) {
-                totalScore += score;
+        for (int round = 1; round <= Archer.MAX_ROUNDS; round++) {
+            if (scores.get(round) != null) {
+                for (int score : scores.get(round)) {
+                    totalScore += score;
+                }
             }
         }
         return totalScore;
@@ -71,18 +74,17 @@ public class Archer {
      * @return negative number, zero or positive number according to Comparator convention
      */
     public int compareByHighestTotalScoreWithLeastMissesAndLowestId(Archer other) {
-        if (this.getTotalScore() != other.getTotalScore()) return this.getTotalScore() - other.getTotalScore();
+        if (this.getTotalScore() != other.getTotalScore()) return other.getTotalScore() - this.getTotalScore();
 
         int timesScoredZeroCurrent = 0;
         int timesScoredZeroOther = 0;
 
-        for (int i = 0; i < MAX_ROUNDS; i++) {
+        for (int i = 1; i <= MAX_ROUNDS; i++) {
             for (int score : this.getScores().get(i)) if (score == 0) timesScoredZeroCurrent++;
             for (int score : other.getScores().get(i)) if (score == 0) timesScoredZeroOther++;
         }
 
-        // The smaller id is an earlier register
-        if (timesScoredZeroCurrent == timesScoredZeroOther) return other.getId() - this.getId();
+        if (timesScoredZeroCurrent == timesScoredZeroOther) return this.getId() - other.getId();
 
         return timesScoredZeroCurrent - timesScoredZeroOther;
     }
