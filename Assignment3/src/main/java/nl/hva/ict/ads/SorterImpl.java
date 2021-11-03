@@ -159,7 +159,7 @@ public class SorterImpl<E> implements Sorter<E> {
 
             // TODO the new root may have violated the heap condition
             //  repair the heap condition on the remaining heap of size i
-            heapSwim(items, i, comparator);
+            heapSink(items, i, reverseComparator);
 
         }
         // alternatively we can realise full ordening with a partial quicksort:
@@ -180,7 +180,7 @@ public class SorterImpl<E> implements Sorter<E> {
      * @param heapSize
      */
     private void heapSwim(List<E> items, int heapSize, Comparator<E> comparator) {
-        // TODO swim items[heapSize-1] up the heap until
+        // swim items[heapSize-1] up the heap until
         //      i==0 || items[(i-1]/2] <= items[i]
         int i = heapSize;
         while (!(i == 0 || comparator.compare(items.get((i - 1) / 2), items.get(i)) <= 0)) {
