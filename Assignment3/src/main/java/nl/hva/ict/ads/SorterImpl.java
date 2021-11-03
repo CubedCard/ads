@@ -155,12 +155,11 @@ public class SorterImpl<E> implements Sorter<E> {
             // position 0 holds the root item of a heap of size i+1 organised by reverseComparator
             // this root item is the worst item of the remaining front part of the lead collection
 
-            // TODO swap item[0] and item[i];
-            //  this moves item[0] to its designated position
-
+            items.set(0, items.set(i, items.get(0)));
 
             // TODO the new root may have violated the heap condition
             //  repair the heap condition on the remaining heap of size i
+            heapSwim(items, i, comparator);
 
         }
         // alternatively we can realise full ordening with a partial quicksort:
@@ -183,7 +182,11 @@ public class SorterImpl<E> implements Sorter<E> {
     private void heapSwim(List<E> items, int heapSize, Comparator<E> comparator) {
         // TODO swim items[heapSize-1] up the heap until
         //      i==0 || items[(i-1]/2] <= items[i]
-
+        int i = heapSize;
+        while (!(i == 0 || comparator.compare(items.get((i - 1) / 2), items.get(i)) <= 0)) {
+            items.set((i - 1) / 2, items.set(i, items.get((i - 1) / 2)));
+            i = (i - 1) / 2;
+        }
     }
 
     /**
@@ -200,6 +203,16 @@ public class SorterImpl<E> implements Sorter<E> {
     private void heapSink(List<E> items, int heapSize, Comparator<E> comparator) {
         // TODO sink items[0] down the heap until
         //      2*i+1>=heapSize || (items[i] <= items[2*i+1] && items[i] <= items[2*i+2])
-
+        int i = 0;
+        while (!(2 * i + 1 >= heapSize || (comparator.compare(items.get(i), items.get(2 * i + 1)) <= 0
+                && comparator.compare(items.get(i), items.get(2 * i + 2)) <= 0))) {
+            if (comparator.compare(items.get(2 * i + 1), items.get(2 * i + 2)) > 0) {
+                items.set(2 * i + 1, items.set(i, items.get(2 * i + 1)));
+                i = 2 * i + 1;
+            } else {
+                items.set(2 * i + 2, items.set(i, items.get(2 * i + 2)));
+                i = 2 * i + 2;
+            }
+        }
     }
 }
