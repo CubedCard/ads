@@ -36,7 +36,8 @@ public class Archer {
      * @param points the points shot during the round, one for each arrow.
      */
     public void registerScoreForRound(int round, int[] points) {
-        scores.put(round, Arrays.copyOf(points, points.length));
+        // check if the correct number of scores where given
+        if (points.length == Archer.MAX_ARROWS) scores.put(round, Arrays.copyOf(points, points.length));
     }
 
 
@@ -46,7 +47,8 @@ public class Archer {
      * @return the total scored points
      */
     public int getTotalScore() {
-        int totalScore = 0;
+        int totalScore = 0; // will hold the total score of the rounds
+        // iterate through the rounds and then the scores to add them to the totalScore variable
         for (int round = 1; round <= Archer.MAX_ROUNDS; round++) {
             if (scores.get(round) != null) {
                 for (int score : scores.get(round)) {
@@ -66,19 +68,27 @@ public class Archer {
      * @return negative number, zero or positive number according to Comparator convention
      */
     public int compareByHighestTotalScoreWithLeastMissesAndLowestId(Archer other) {
-        if (this.getTotalScore() != other.getTotalScore()) return other.getTotalScore() - this.getTotalScore();
+        // put the total scores in a variable be more time efficient (not calling the method a second time)
+        int totalScoreCurrent = this.getTotalScore();
+        int totalScoreOther = other.getTotalScore();
 
-        int timesScoredZeroCurrent = 0;
-        int timesScoredZeroOther = 0;
+        // first check if the total scores are not equal, because then you can compare the total scores
+        if (totalScoreCurrent != totalScoreOther) return totalScoreOther - totalScoreCurrent;
 
+        int timesScoredZeroCurrent = 0; // keeps track of the number of misses of the current archer
+        int timesScoredZeroOther = 0; // keeps track of the number of misses of the other archer
+
+        // iterate through the scores and increment the corresponding variable when a zero was scored by the archer
         for (int i = 1; i <= MAX_ROUNDS; i++) {
             for (int score : this.getScores().get(i)) if (score == 0) timesScoredZeroCurrent++;
             for (int score : other.getScores().get(i)) if (score == 0) timesScoredZeroOther++;
         }
 
-        if (timesScoredZeroCurrent == timesScoredZeroOther) return this.getId() - other.getId();
+        // if the number of misses are not equal, compare these
+        if (timesScoredZeroCurrent != timesScoredZeroOther) return timesScoredZeroCurrent - timesScoredZeroOther;
 
-        return timesScoredZeroCurrent - timesScoredZeroOther;
+        // finally, if the number of misses is equal, compare by registration (id)
+        return this.getId() - other.getId();
     }
 
     public int getId() {
