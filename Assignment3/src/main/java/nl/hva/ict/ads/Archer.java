@@ -27,14 +27,6 @@ public class Archer {
         this.firstName = firstName;
         this.lastName = lastName;
         this.scores = new HashMap<>();
-
-        int[] scoresArrows = new int[Archer.MAX_ARROWS];
-
-//        for (int i = 0; i < Archer.MAX_ROUNDS; i++) {
-//            for (int j = 0; j < Archer.MAX_ARROWS; j++) scoresArrows[j] = (int) Math.floor(Math.random() * 11);
-//            this.registerScoreForRound(i + 1, scoresArrows);
-//            scoresArrows = new int[Archer.MAX_ARROWS];
-//        }
     }
 
     /**
