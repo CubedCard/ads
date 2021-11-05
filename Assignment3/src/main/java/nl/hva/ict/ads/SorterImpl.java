@@ -150,22 +150,20 @@ public class SorterImpl<E> implements Sorter<E> {
         // the first numTops positions of the list now contain the lead collection
         // the reverseComparator heap condition applies to this lead collection
         // now use heapSort to realise full ordening of this collection
-        System.out.println(items.subList(0,5));
-        for (int i = numTops - 1; i > 0; i--) {
-            // loop-invariant: items[i+1..numTops-1] contains the tail part of the sorted lead collection
-            // position 0 holds the root item of a heap of size i+1 organised by reverseComparator
-            // this root item is the worst item of the remaining front part of the lead collection
-
-            items.set(0, items.set(i, items.get(0)));
-
-            // TODO the new root may have violated the heap condition
-            //  repair the heap condition on the remaining heap of size i
-            heapSwim(items, i + 1, comparator);
-
-        }
-        System.out.println(items.subList(0,5));
+//        for (int i = numTops - 1; i > 0; i--) {
+//            // loop-invariant: items[i+1..numTops-1] contains the tail part of the sorted lead collection
+//            // position 0 holds the root item of a heap of size i+1 organised by reverseComparator
+//            // this root item is the worst item of the remaining front part of the lead collection
+//
+//            items.set(0, items.set(i, items.get(0)));
+//
+//            // TODO the new root may have violated the heap condition
+//            //  repair the heap condition on the remaining heap of size i
+//            heapSwim(items, i + 1, comparator);
+//
+//        }
         // alternatively we can realise full ordening with a partial quicksort:
-        // quickSortPart(items, 0, numTops-1, comparator);
+        quickSortPart(items, 0, numTops-1, comparator);
 
         return items;
     }
