@@ -109,8 +109,6 @@ public class Archer {
 
     @Override
     public String toString() {
-        return String.format("%d (%d) %s %s",
-                getId(), getTotalScore(), getFirstName(), getLastName()
-        );
+        return String.format("%d (%d) %s %s", getId(), getTotalScore(), getFirstName(), getLastName());
     }
 }
