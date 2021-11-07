@@ -29,7 +29,7 @@ class SortPerformanceTest {
         System.gc();
         this.seed++;
         Names.reSeed(new Random(seed).nextLong());
-        this.numberOfArchers = 100;
+        this.numberOfArchers = 50;
         this.time = 0;
         this.numberOfTimes = 0;
     }
