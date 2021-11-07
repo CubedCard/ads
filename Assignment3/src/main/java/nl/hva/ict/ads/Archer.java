@@ -50,7 +50,7 @@ public class Archer {
         int totalScore = 0; // will hold the total score of the rounds
         // iterate through the rounds and then the scores to add them to the totalScore variable
         for (int round = 1; round <= Archer.MAX_ROUNDS; round++) {
-            if (scores.get(round) != null) {
+            if (scores.get(round) != null) { // prevent exception
                 for (int score : scores.get(round)) {
                     totalScore += score;
                 }

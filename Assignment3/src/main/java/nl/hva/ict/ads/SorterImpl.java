@@ -81,7 +81,7 @@ public class SorterImpl<E> implements Sorter<E> {
     private int partition(List<E> items, int from, int to, Comparator<E> comparator) {
         int low = from + 1;
         int high = to;
-        E pivot = items.get(from);
+        E pivot = items.get(from); // select a pivot item
 
         do {
             // ignore the items that don't need to be pivoted
@@ -157,13 +157,13 @@ public class SorterImpl<E> implements Sorter<E> {
 //
 //            items.set(0, items.set(i, items.get(0)));
 //
-//            // TODO the new root may have violated the heap condition
+//            // the new root may have violated the heap condition
 //            //  repair the heap condition on the remaining heap of size i
 //            heapSwim(items, i + 1, comparator);
 //
 //        }
-        // alternatively we can realise full ordening with a partial quicksort:
-        quickSortPart(items, 0, numTops-1, comparator);
+        // alternatively we can realise full ordering with a partial quicksort:
+        quickSortPart(items, 0, numTops - 1, comparator);
 
         return items;
     }
@@ -177,15 +177,16 @@ public class SorterImpl<E> implements Sorter<E> {
      *
      * @param items      is the list of items that needs to be sorted
      * @param comparator this is used to compare the items in the items list with each other
-     * @param heapSize
+     * @param heapSize   the size to swim from
      */
     private void heapSwim(List<E> items, int heapSize, Comparator<E> comparator) {
         // swim items[heapSize-1] up the heap until
         //      i==0 || items[(i-1)/2] <= items[i]
         int i = heapSize - 1;
         while (i > 0 && comparator.compare(items.get((i - 1) / 2), items.get(i)) > 0) {
+            // swap while within the selected area [0…i]
             items.set((i - 1) / 2, items.set(i, items.get((i - 1) / 2)));
-            i = (i - 1) / 2;
+            i = (i - 1) / 2; // set the index to the index of the parent it just swapped with
         }
     }
 
@@ -198,23 +199,25 @@ public class SorterImpl<E> implements Sorter<E> {
      *
      * @param items      is the array that needs to be sorted
      * @param comparator this is used to compare the items in the items list with each other
-     * @param heapSize
+     * @param heapSize   the size to sink to
      */
     private void heapSink(List<E> items, int heapSize, Comparator<E> comparator) {
         // sink items[0] down the heap until
         //      2*i+1>=heapSize || (items[i] <= items[2*i+1] && items[i] <= items[2*i+2])
         int parentIndex = 0;
         int childIndex = 1;
-        while (childIndex < heapSize) {
+        while (childIndex < heapSize) { // is the child within the wanted area
             E child = items.get(childIndex);
+            // check if the other child is smaller
             if (childIndex + 1 <= heapSize && comparator.compare(items.get(childIndex + 1), child) < 0) {
-                childIndex++;
+                childIndex++; // switch children
                 child = items.get(childIndex);
             }
+            // when the parent is smaller than the child, you're done sinking
             if (comparator.compare(items.get(parentIndex), child) <= 0) break;
             items.set(parentIndex, items.set(childIndex, items.get(parentIndex)));
-            parentIndex = childIndex;
-            childIndex = 2 * parentIndex + 1;
+            parentIndex = childIndex; // set the new parentIndex
+            childIndex = 2 * parentIndex + 1; // set the new childIndex (zero-based)
         }
     }
 }
