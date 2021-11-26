@@ -15,6 +15,7 @@ public class Measurement {
     private final static int FIELD_RH = 22;
     private final static int FIELD_RHX = 23;
     private final static int NUM_FIELDS = 24;
+    private final static double SCALE = 0.1;
 
     private final Station station;            // col0, STN
     private final LocalDate date;             // col1, YYMMDDDD
@@ -38,7 +39,7 @@ public class Measurement {
      * converts integer values to doubles as per unit of measure indicators
      * empty or corrupt values are replaced by Double.NaN
      * -1 values that indicate < 0.05 are replaced by 0.0
-     * @param textLine
+     * @param textLine  string to be converted to a Measurement instance
      * @param stations  a map of Stations that can be accessed by station number STN
      * @return          a new Measurement instance that records all data values of above quantities
      *                  null if the station number cannot be resolved,
