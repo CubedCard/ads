@@ -140,5 +140,8 @@ public class Station {
     // TODO any other methods required to make it work
 
 
-
+    @Override
+    public String toString() {
+        return String.format("%d/%s", this.stn, this.name);
+    }
 }
