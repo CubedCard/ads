@@ -59,7 +59,7 @@ public class Station {
     public int addMeasurements(Collection<Measurement> newMeasurements) {
         int oldSize = this.getMeasurements().size();
 
-        // TODO add all newMeasurements to the station
+        // TODO add all newMeasurements to the station (Yaël)
         //  ignore those who are not related to this station and entries with a duplicate date.
 
 
@@ -72,7 +72,7 @@ public class Station {
      *          returns Double.NaN when no valid measurements are available
      */
     public double allTimeMaxTemperature() {
-        // TODO calculate the maximum wind gust speed across all valid measurements
+        // TODO calculate the maximum wind gust speed across all valid measurements (Jip)
 
 
         return Double.NaN;
@@ -83,7 +83,7 @@ public class Station {
      *          returns Optional.empty() if no measurements are available
      */
     public Optional<LocalDate> firstDayOfMeasurement() {
-        // TODO get the date of the first measurement at this station
+        // TODO get the date of the first measurement at this station (Yaël)
 
 
         return Optional.empty();
@@ -97,7 +97,7 @@ public class Station {
      * @return          the number of valid values found
      */
     public int numValidValues(Function<Measurement,Double> mapper) {
-        // TODO count the number of valid values that can be accessed in the measurements collection
+        // TODO count the number of valid values that can be accessed in the measurements collection (Jip)
         //  by means of the mapper access function
 
 
@@ -113,7 +113,7 @@ public class Station {
      *                      0.0 if no measurements have been made in this period.
      */
     public double totalPrecipitationBetween(LocalDate startDate, LocalDate endDate) {
-        // TODO calculate and return the total precipitation across the given period
+        // TODO calculate and return the total precipitation across the given period (Yaël)
         //  use the 'subMap' method to only process the measurements within the given period
 
 
@@ -130,7 +130,7 @@ public class Station {
      *                      Double.NaN if no valid measurements are available from this period.
      */
     public double averageBetween(LocalDate startDate, LocalDate endDate, Function<Measurement,Double> mapper) {
-        // TODO calculate and return the average value of the quantity mapper across the given period
+        // TODO calculate and return the average value of the quantity mapper across the given period (Jip)
         //  use the 'subMap' method to only process the measurements within the given period
 
 
