@@ -2,9 +2,11 @@ package models;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Station {
     private final int stn;
@@ -74,8 +76,13 @@ public class Station {
     public double allTimeMaxTemperature() {
         // TODO calculate the maximum wind gust speed across all valid measurements (Jip)
 
+        double measurementsMaxWindGust = Double.NaN;
 
-        return Double.NaN;
+        for (var entry : this.measurements.entrySet()) {
+            measurementsMaxWindGust = Math.max(measurementsMaxWindGust, entry.getValue().getMaxWindGust());
+        }
+
+        return measurementsMaxWindGust;
     }
 
     /**
