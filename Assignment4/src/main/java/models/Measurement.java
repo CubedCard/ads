@@ -1,5 +1,6 @@
 package models;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -50,11 +51,78 @@ public class Measurement {
         if (fields.length < NUM_FIELDS) return null;
 
         // TODO create a new Measurement instance
-        //  further parse and convert and store all relevant quantities
+        Measurement measurement;
+
+        try {
+            if (!stations.containsKey(Integer.parseInt(fields[FIELD_STN].trim()))) return null;
+            measurement = new Measurement(
+                    stations.get(Integer.parseInt(fields[FIELD_STN].trim())),
+                    Integer.parseInt(fields[FIELD_YYMMDDDD])
+            );
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+
+        // further, parse and convert and store all relevant quantities
+
+        try {
+            double readAverageWindSpeed = Double.parseDouble(fields[FIELD_FG].trim()) * SCALE;
+            measurement.setAverageWindSpeed(readAverageWindSpeed);
+        } catch (NumberFormatException ex) {
+            measurement.setAverageWindSpeed(Double.NaN);
+        }
+
+        try {
+            double readMaxWindGust = Double.parseDouble(fields[FIELD_FXX].trim()) * SCALE;
+            measurement.setMaxWindGust(readMaxWindGust);
+        } catch (NumberFormatException ex) {
+            measurement.setMaxWindGust(Double.NaN);
+        }
+
+        try {
+            double readAverageTemperature = Double.parseDouble(fields[FIELD_TG].trim()) * SCALE;
+            measurement.setAverageTemperature(readAverageTemperature);
+        } catch (NumberFormatException ex) {
+            measurement.setAverageTemperature(Double.NaN);
+        }
+
+        try {
+            double readMinTemperature = Double.parseDouble(fields[FIELD_TN].trim()) * SCALE;
+            measurement.setMinTemperature(readMinTemperature);
+        } catch (NumberFormatException ex) {
+            measurement.setMinTemperature(Double.NaN);
+        }
 
 
+        try {
+            double readMaxTemperature = Double.parseDouble(fields[FIELD_TX].trim()) * SCALE;
+            measurement.setMaxTemperature(readMaxTemperature);
+        } catch (NumberFormatException ex) {
+            measurement.setMaxTemperature(Double.NaN);
+        }
 
-        return null;
+        try {
+            double readSolarHours = Double.parseDouble(fields[FIELD_SQ].trim()) * SCALE;
+            measurement.setSolarHours(readSolarHours);
+        } catch (NumberFormatException ex) {
+            measurement.setSolarHours(Double.NaN);
+        }
+
+        try {
+            double readPrecipitation = Double.parseDouble(fields[FIELD_RH].trim()) * SCALE;
+            measurement.setPrecipitation(readPrecipitation);
+        } catch (NumberFormatException ex) {
+            measurement.setPrecipitation(Double.NaN);
+        }
+
+        try {
+            double readMaxHourlyPrecipitation = Double.parseDouble(fields[FIELD_RHX].trim()) * SCALE;
+            measurement.setMaxHourlyPrecipitation(readMaxHourlyPrecipitation);
+        } catch (NumberFormatException ex) {
+            measurement.setMaxHourlyPrecipitation(Double.NaN);
+        }
+
+        return measurement;
     }
 
     public Station getStation() {
