@@ -2,6 +2,7 @@ package models;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.function.Function;
@@ -20,7 +21,6 @@ public class Station {
 
     public Collection<Measurement> getMeasurements() {
         // TODO return the measurements of this station
-
 
         return null;
     }
@@ -62,6 +62,11 @@ public class Station {
         // TODO add all newMeasurements to the station (Yaël)
         //  ignore those who are not related to this station and entries with a duplicate date.
 
+        newMeasurements.stream()
+                .filter(measurement -> measurement.getStation().equals(this))
+                .filter(measurement -> !measurements.containsKey(measurement.getDate()))
+                .forEach(measurement -> measurements.put(measurement.getDate(), measurement));
+
 
         return this.getMeasurements().size() - oldSize;
     }
@@ -85,8 +90,7 @@ public class Station {
     public Optional<LocalDate> firstDayOfMeasurement() {
         // TODO get the date of the first measurement at this station (Yaël)
 
-
-        return Optional.empty();
+        return measurements.get(measurements.keySet().stream().min(Comparator.naturalOrder())).getStation().firstDayOfMeasurement();
     }
 
     /**
@@ -117,7 +121,7 @@ public class Station {
         //  use the 'subMap' method to only process the measurements within the given period
 
 
-        return 0.0;
+        return measurements.subMap(startDate, endDate).values().stream().mapToDouble(Measurement::getPrecipitation).sum();
     }
 
     /**
