@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.NavigableMap;
 import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 
 public class Station {
@@ -16,13 +17,13 @@ public class Station {
         this.stn = id;
         this.name = name;
         // TODO initialize the measurements data structure with a suitable implementation class.
-
+        this.measurements = new TreeMap<>(); // TODO decide what data structure to use
     }
 
     public Collection<Measurement> getMeasurements() {
         // TODO return the measurements of this station
 
-        return null;
+        return new ArrayList<>(this.measurements.values());
     }
 
     public int getStn() {
@@ -79,8 +80,13 @@ public class Station {
     public double allTimeMaxTemperature() {
         // TODO calculate the maximum wind gust speed across all valid measurements (Jip)
 
+        double measurementsMaxWindGust = Double.NaN;
 
-        return Double.NaN;
+        for (var entry : this.measurements.entrySet()) {
+            measurementsMaxWindGust = Math.max(measurementsMaxWindGust, entry.getValue().getMaxWindGust());
+        }
+
+        return measurementsMaxWindGust;
     }
 
     /**
@@ -95,7 +101,7 @@ public class Station {
 
     /**
      * calculates the number of valid values of the data field that is specified by the mapper
-     * invalid or empty values should be are represented by Double.NaN
+     * invalid or empty values should be represented by Double.NaN
      * this method can be used to check on different types of measurements each with their own mapper
      * @param mapper    the getter method of the data field to be checked.
      * @return          the number of valid values found
@@ -103,9 +109,13 @@ public class Station {
     public int numValidValues(Function<Measurement,Double> mapper) {
         // TODO count the number of valid values that can be accessed in the measurements collection (Jip)
         //  by means of the mapper access function
+        int numberOfValidValuesFound = 0;
 
+        for (var entry : this.measurements.entrySet()) {
+            numberOfValidValuesFound += mapper.apply(entry.getValue());
+        }
 
-        return 0;
+        return numberOfValidValuesFound;
     }
 
     /**
@@ -136,9 +146,17 @@ public class Station {
     public double averageBetween(LocalDate startDate, LocalDate endDate, Function<Measurement,Double> mapper) {
         // TODO calculate and return the average value of the quantity mapper across the given period (Jip)
         //  use the 'subMap' method to only process the measurements within the given period
+        Map<LocalDate, Measurement> measurementsWithinTheGivenPeriod = this.measurements.subMap(startDate, endDate);
+        double average = 0;
 
+        for (Measurement measurement : measurementsWithinTheGivenPeriod.values()) {
+            average += mapper.apply(measurement);
+        }
 
-        return Double.NaN;
+        average = average / measurementsWithinTheGivenPeriod.size();
+
+        if (measurementsWithinTheGivenPeriod.size() == 0) return Double.NaN;
+        return average;
     }
 
     // TODO any other methods required to make it work
