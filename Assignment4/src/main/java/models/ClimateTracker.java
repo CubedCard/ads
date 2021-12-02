@@ -10,41 +10,45 @@ import java.util.function.Function;
 public class ClimateTracker {
     private final String MEASUREMENTS_FILE_PATTERN = ".*\\.txt";
 
-    private Map<Integer,Station> stations;        // all available weather stations organised by Station Number (STN)
+    private Map<Integer, Station> stations;        // all available weather stations organised by Station Number (STN)
 
     public Set<Station> getStations() {
-        // TODO return all stations in this tracker
-
-
-        return Set.of();
+        return Set.of(stations.values().toArray(Station[]::new));
     }
+
     public Station findStationById(int stn) {
         // TODO find the station with the given stn
 
 
         return null;
     }
+
     public ClimateTracker() {
         this.stations = new HashMap<>();
     }
 
     /**
      * calculates for each station how many Measurement instances have been registered
+     *
      * @return
      */
-    public Map<Station,Integer> numberOfMeasurementsByStation() {
+    public Map<Station, Integer> numberOfMeasurementsByStation() {
         // TODO build a map resolving for each station its number of registered Measurement instances
 
+        Map<Station, Integer> map = new TreeMap<>(Station::compareTo);
+        stations.values()
+                .forEach(station -> map.merge(station, station.getMeasurements().size(), Integer::sum));
 
-        return null;
+        return map;
     }
 
     /**
      * calculates for each station the date of the first day of its measurements
      * stations without measurements shall be excluded from the result
+     *
      * @return
      */
-    public Map<Station,LocalDate> firstDayOfMeasurementByStation() {
+    public Map<Station, LocalDate> firstDayOfMeasurementByStation() {
         // TODO build a map resolving for each station the date of its first day of measurements
 
 
@@ -55,10 +59,11 @@ public class ClimateTracker {
      * calculates for each station how many valid values it has available for the measurement quantity
      * that can be accessed by the mapper.
      * invalid values are registered as Double.NaN. They originate from empty or corrupt data in the source file
-     * @param mapper    a getter method that accesses the selected quantity from a Measurement instance
+     *
+     * @param mapper a getter method that accesses the selected quantity from a Measurement instance
      * @return
      */
-    public Map<Station,Integer> numberOfValidValuesByStation(Function<Measurement,Double> mapper) {
+    public Map<Station, Integer> numberOfValidValuesByStation(Function<Measurement, Double> mapper) {
         // TODO build a map resolving for each station the number of valid values for the specified quantity.
 
 
@@ -69,9 +74,10 @@ public class ClimateTracker {
      * Calculates for each calendar year in the dataset the average daily temperatures
      * across all days in the year and all stations in this tracker
      * (invalid values shall be excluded from the averaging)
-     * @return      a map(Y,T) that provides for each year Y the average temperature T of that year
+     *
+     * @return a map(Y,T) that provides for each year Y the average temperature T of that year
      */
-    public Map<Integer,Double> annualAverageTemperatureTrend() {
+    public Map<Integer, Double> annualAverageTemperatureTrend() {
         // TODO build a map collecting for each year the average temperature in that year
 
 
@@ -83,11 +89,12 @@ public class ClimateTracker {
      * across all days in the year and all stations in this tracker
      * (invalid values shall be excluded from the maximum aggregation)
      * (this method can be reused for maximum aggregation of different quantities in the Measurement data
+     *
      * @param mapper a getter function on the Measurement class
-     *              that selects the appropriate value for the maximum aggregation procedure
-     * @return      a map(Y,Q) that provides for each year Y the maximum value Q of the specified quantity
+     *               that selects the appropriate value for the maximum aggregation procedure
+     * @return a map(Y,Q) that provides for each year Y the maximum value Q of the specified quantity
      */
-    public Map<Integer,Double> annualMaximumTrend(Function<Measurement,Double> mapper) {
+    public Map<Integer, Double> annualMaximumTrend(Function<Measurement, Double> mapper) {
         // TODO build a map collecting for each year the maximum value of the mapped quantity in that year
 
 
@@ -99,9 +106,10 @@ public class ClimateTracker {
      * across all years and all stations
      * The graph of these numbers can be found in touristic brochures.
      * (invalid values shall be excluded from the averaging)
-     * @return      a map(M,SQ) that provides for each month M the average daily sunshine hours SQ across all times
+     *
+     * @return a map(M,SQ) that provides for each month M the average daily sunshine hours SQ across all times
      */
-    public Map<Month,Double> allTimeAverageDailySolarByMonth() {
+    public Map<Month, Double> allTimeAverageDailySolarByMonth() {
         // TODO build a map collecting for each month the average value of daily sunshine hours
 
 
@@ -114,8 +122,9 @@ public class ClimateTracker {
      * accumulated across all stations
      * I.e. any daily value of a minimum temperature at a station that is above zero should not be included in its sum for the year
      * The lowest yearsum of negative minimum temperatures indicates the coldest year.
-     * @return      the coldest year (a number between 1900 and 2099)
-     *              return -1 if no valid minimum temperature measurements are available
+     *
+     * @return the coldest year (a number between 1900 and 2099)
+     * return -1 if no valid minimum temperature measurements are available
      */
     public int coldestYear() {
         // TODO determine the coldest year
@@ -123,12 +132,12 @@ public class ClimateTracker {
         //        then find the coldest year in that helper map
 
 
-
         return -1;
     }
 
     /**
      * imports all station and measurement information
+     *
      * @param folderPath
      */
     public void importClimateDataFromVault(String folderPath) {
@@ -145,6 +154,7 @@ public class ClimateTracker {
 
     /**
      * traverses the purchases vault recursively and processes every data file that it finds
+     *
      * @param filePath
      */
     public void importMeasurementsFromVault(String filePath) {
@@ -169,13 +179,14 @@ public class ClimateTracker {
 
     /**
      * imports a collection of items from a text file which provides one line for each item
-     * @param items         the list to which imported items shall be added
-     * @param filePath      the file path of the source text file
-     * @param converter     a function that can convert a text line into a new item instance
-     * @param <E>           the (generic) type of each item
+     *
+     * @param items     the list to which imported items shall be added
+     * @param filePath  the file path of the source text file
+     * @param converter a function that can convert a text line into a new item instance
+     * @param <E>       the (generic) type of each item
      */
-    private static <K,E> void importItemsFromFile(Map<K,E> items, String filePath, String headerPrefix,
-                                                 Function<String,E> converter, Function<E,K> mapper) {
+    private static <K, E> void importItemsFromFile(Map<K, E> items, String filePath, String headerPrefix,
+                                                   Function<String, E> converter, Function<E, K> mapper) {
         int originalNumItems = items.size();
 
         Scanner scanner = createFileScanner(filePath);
@@ -210,7 +221,7 @@ public class ClimateTracker {
             }
         }
 
-        if (items.size() < originalNumItems+newCount) {
+        if (items.size() < originalNumItems + newCount) {
             throw new InputMismatchException(String.format("Duplicate items found in file %s", filePath));
         }
 
@@ -220,6 +231,7 @@ public class ClimateTracker {
     /**
      * imports another batch of raw purchase data from the filePath text file
      * and merges the purchase amounts with the earlier imported and accumulated collection in this.purchases
+     *
      * @param filePath
      */
     private void importMeasurementsFromFile(String filePath) {
@@ -245,6 +257,7 @@ public class ClimateTracker {
 
     /**
      * helper method to create a scanner on a file an handle the exception
+     *
      * @param filePath
      * @return
      */

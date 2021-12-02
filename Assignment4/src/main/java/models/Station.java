@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.*;
 import java.util.function.Function;
 
-public class Station {
+public class Station implements Comparable<Station> {
     private final int stn;
     private final String name;
     private NavigableMap<LocalDate, Measurement> measurements;
@@ -80,13 +80,11 @@ public class Station {
     public double allTimeMaxTemperature() {
         // TODO calculate the maximum wind gust speed across all valid measurements (Jip)
 
-        double measurementsMaxWindGust = Double.NaN;
-
-        for (var entry : this.measurements.entrySet()) {
-            measurementsMaxWindGust = Math.max(measurementsMaxWindGust, entry.getValue().getMaxWindGust());
-        }
-
-        return measurementsMaxWindGust;
+        return this.measurements.values()
+                .stream()
+                .mapToDouble(Measurement::getMaxWindGust)
+                .max()
+                .orElse(Double.NaN);
     }
 
     /**
@@ -109,13 +107,12 @@ public class Station {
     public int numValidValues(Function<Measurement,Double> mapper) {
         // TODO count the number of valid values that can be accessed in the measurements collection (Jip)
         //  by means of the mapper access function
-        int numberOfValidValuesFound = 0;
+        double numberOfValidValuesFound = this.measurements.values()
+                .stream()
+                .mapToDouble(mapper::apply)
+                .sum();
 
-        for (var entry : this.measurements.entrySet()) {
-            numberOfValidValuesFound += mapper.apply(entry.getValue());
-        }
-
-        return numberOfValidValuesFound;
+        return (int) numberOfValidValuesFound;
     }
 
     /**
@@ -144,26 +141,24 @@ public class Station {
      *                      Double.NaN if no valid measurements are available from this period.
      */
     public double averageBetween(LocalDate startDate, LocalDate endDate, Function<Measurement,Double> mapper) {
-        // TODO calculate and return the average value of the quantity mapper across the given period (Jip)
-        //  use the 'subMap' method to only process the measurements within the given period
         Map<LocalDate, Measurement> measurementsWithinTheGivenPeriod = this.measurements.subMap(startDate, endDate);
-        double average = 0;
 
-        for (Measurement measurement : measurementsWithinTheGivenPeriod.values()) {
-            average += mapper.apply(measurement);
-        }
-
-        average = average / measurementsWithinTheGivenPeriod.size();
-
-        if (measurementsWithinTheGivenPeriod.size() == 0) return Double.NaN;
-        return average;
+        return measurementsWithinTheGivenPeriod.values()
+                .stream()
+                .mapToDouble(mapper::apply)
+                .average()
+                .orElse(Double.NaN);
     }
 
     // TODO any other methods required to make it work
 
-
     @Override
     public String toString() {
         return String.format("%d/%s", this.stn, this.name);
+    }
+
+    @Override
+    public int compareTo(Station o) {
+        return this.getMeasurements().size() - o.getMeasurements().size();
     }
 }
