@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.*;
 import java.util.function.Function;
 
-public class Station implements Comparable<Station> {
+public class Station {
     private final int stn;
     private final String name;
     private NavigableMap<LocalDate, Measurement> measurements;
@@ -150,15 +150,14 @@ public class Station implements Comparable<Station> {
                 .orElse(Double.NaN);
     }
 
+    public int getMeasurementsSize() {
+        return this.measurements.size();
+    }
+
     // TODO any other methods required to make it work
 
     @Override
     public String toString() {
         return String.format("%d/%s", this.stn, this.name);
-    }
-
-    @Override
-    public int compareTo(Station o) {
-        return this.getMeasurements().size() - o.getMeasurements().size();
     }
 }

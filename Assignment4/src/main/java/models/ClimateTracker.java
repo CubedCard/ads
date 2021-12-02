@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class ClimateTracker {
     private final String MEASUREMENTS_FILE_PATTERN = ".*\\.txt";
@@ -19,8 +20,11 @@ public class ClimateTracker {
     public Station findStationById(int stn) {
         // TODO find the station with the given stn
 
-
-        return null;
+        return this.getStations()
+                .stream()
+                .filter(station -> station.getStn() == stn)
+                .findAny()
+                .orElse(null);
     }
 
     public ClimateTracker() {
@@ -35,11 +39,16 @@ public class ClimateTracker {
     public Map<Station, Integer> numberOfMeasurementsByStation() {
         // TODO build a map resolving for each station its number of registered Measurement instances
 
-        Map<Station, Integer> map = new TreeMap<>(Station::compareTo);
-        stations.values()
-                .forEach(station -> map.merge(station, station.getMeasurements().size(), Integer::sum));
-
-        return map;
+        return stations.values()
+                .stream()
+                .collect(
+                        Collectors.toMap(
+                                station -> station,
+                                Station::getMeasurementsSize,
+                                Integer::sum,
+                                TreeMap::new
+                        )
+                );
     }
 
     /**
