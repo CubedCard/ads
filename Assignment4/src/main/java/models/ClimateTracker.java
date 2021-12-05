@@ -39,8 +39,9 @@ public class ClimateTracker {
     public Map<Station, Integer> numberOfMeasurementsByStation() {
         // TODO build a map resolving for each station its number of registered Measurement instances
 
-        return stations.values()
+        return this.getStations()
                 .stream()
+//                .sorted(Station::compareTo)
                 .collect(
                         Collectors.toMap(
                                 station -> station,
