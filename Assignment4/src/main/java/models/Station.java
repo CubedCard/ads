@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.*;
 import java.util.function.Function;
 
-public class Station {
+public class Station implements Comparable {
     private final int stn;
     private final String name;
     private NavigableMap<LocalDate, Measurement> measurements;
@@ -94,7 +94,11 @@ public class Station {
     public Optional<LocalDate> firstDayOfMeasurement() {
         // TODO get the date of the first measurement at this station (Yaël)
 
-        return measurements.get(measurements.keySet().stream().min(Comparator.naturalOrder())).getStation().firstDayOfMeasurement();
+        return measurements
+                .keySet()
+                .stream()
+                .sorted(Comparator.naturalOrder())
+                .findFirst();
     }
 
     /**
@@ -159,5 +163,11 @@ public class Station {
     @Override
     public String toString() {
         return String.format("%d/%s", this.stn, this.name);
+    }
+
+    @Override
+    public int compareTo(Object o)
+    {
+        return Integer.compare(this.getStn(), ((Station) o).getStn());
     }
 }

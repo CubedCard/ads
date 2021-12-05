@@ -34,7 +34,7 @@ public class ClimateTracker {
     /**
      * calculates for each station how many Measurement instances have been registered
      *
-     * @return
+     * @return a map which contains the amount of measurements per station.
      */
     public Map<Station, Integer> numberOfMeasurementsByStation() {
         // TODO build a map resolving for each station its number of registered Measurement instances
@@ -60,8 +60,16 @@ public class ClimateTracker {
     public Map<Station, LocalDate> firstDayOfMeasurementByStation() {
         // TODO build a map resolving for each station the date of its first day of measurements
 
-
-        return null;
+        return stations.values()
+                .stream()
+                .filter(station -> !station.getMeasurements().isEmpty())
+                .collect(Collectors.toMap(
+                                station -> station,
+                                station -> station.firstDayOfMeasurement().get(),
+                                (a, b) -> b,
+                                TreeMap::new
+                        )
+                );
     }
 
     /**
