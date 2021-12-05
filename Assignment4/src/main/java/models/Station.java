@@ -162,7 +162,7 @@ public class Station implements Comparable<Station> {
 
     @Override
     public int compareTo(Station o) {
-        return o.hashCode() - this.hashCode();
+        return Integer.compare(this.getStn(), o.getStn());
     }
 
     @Override
