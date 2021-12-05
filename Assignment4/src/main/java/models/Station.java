@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.*;
 import java.util.function.Function;
 
-public class Station implements Comparable {
+public class Station implements Comparable<Station> {
     private final int stn;
     private final String name;
     private NavigableMap<LocalDate, Measurement> measurements;
@@ -161,13 +161,12 @@ public class Station implements Comparable {
     // TODO any other methods required to make it work
 
     @Override
-    public String toString() {
-        return String.format("%d/%s", this.stn, this.name);
+    public int compareTo(Station o) {
+        return o.hashCode() - this.hashCode();
     }
 
     @Override
-    public int compareTo(Object o)
-    {
-        return Integer.compare(this.getStn(), ((Station) o).getStn());
+    public String toString() {
+        return String.format("%d/%s", this.stn, this.name);
     }
 }
