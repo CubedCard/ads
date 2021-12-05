@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.Month;
+import java.time.Year;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class ClimateTracker {
 
         return this.getStations()
                 .stream()
-//                .sorted(Station::compareTo)
+//                .sorted(Station::compareTo) // maybe use this in combination with a hashmap instead of a treemap
                 .collect(
                         Collectors.toMap(
                                 station -> station,
@@ -160,12 +161,30 @@ public class ClimateTracker {
      * return -1 if no valid minimum temperature measurements are available
      */
     public int coldestYear() {
-        // TODO determine the coldest year
-        //  hint: first build a helper map that accumulates the yearsums of negative minimum temperatures
-        //        then find the coldest year in that helper map
+        // determine the coldest year
+        // hint: first build a helper map that accumulates the yearsums of negative minimum temperatures
+        //       then find the coldest year in that helper map
 
+        Map<Integer, Double> map = this.getStations()
+                .stream()
+                .map(Station::getMeasurements)
+                .flatMap(Collection::stream)
+                .filter(measurement -> !Double.isNaN(measurement.getSolarHours()))
+                .filter(measurement -> measurement.getMinTemperature() <= 0)
+                .collect(Collectors.groupingBy(
+                        measurement -> measurement.getDate().getYear(),
+                        TreeMap::new,
+                        Collectors.summingDouble(Measurement::getMinTemperature)
+                ));
 
-        return -1;
+        // if the map is empty, then there is no coldest year
+        if (map.isEmpty()) return -1;
+
+        Map.Entry<Integer, Double> minEntryInMap = Collections.min(map.entrySet(),
+                Map.Entry.comparingByValue()); // entry with the lowest value
+
+        // get the key of the minimum key (year)
+        return minEntryInMap.getKey();
     }
 
     /**

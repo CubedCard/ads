@@ -80,7 +80,7 @@ public class ClimateTrackerTest {
         //System.out.println(climateTracker.allTimeMonthlyMeasurementCount(Measurement::getSolarHours));
 
         Map<Month,Double> solarProfile = climateTracker.allTimeAverageDailySolarByMonth();
-        System.out.println(solarProfile);
+        //System.out.println(solarProfile);
         assertArrayEquals(new double[] {1.6505, 3.2581, 5.1946, 8.6866, 8.5104, 8.3825, 7.2330, 7.3717, 6.1958, 2.9247, 2.4},
                 solarProfile.values().stream().mapToDouble(v->v).toArray(),
                 0.01);
