@@ -8,6 +8,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.averagingDouble;
+
 public class ClimateTracker {
     private final String MEASUREMENTS_FILE_PATTERN = ".*\\.txt";
 
@@ -79,13 +81,19 @@ public class ClimateTracker {
      * invalid values are registered as Double.NaN. They originate from empty or corrupt data in the source file
      *
      * @param mapper a getter method that accesses the selected quantity from a Measurement instance
-     * @return
+     * @return a map with stations as keys and the number of valid values per station as values
      */
     public Map<Station, Integer> numberOfValidValuesByStation(Function<Measurement, Double> mapper) {
         // TODO build a map resolving for each station the number of valid values for the specified quantity.
 
-
-        return null;
+        return this.getStations()
+                .stream()
+                .collect(
+                        Collectors.toMap(
+                                station -> station,
+                                station -> station.numValidValues(mapper)
+                        )
+                );
     }
 
     /**
@@ -128,10 +136,17 @@ public class ClimateTracker {
      * @return a map(M,SQ) that provides for each month M the average daily sunshine hours SQ across all times
      */
     public Map<Month, Double> allTimeAverageDailySolarByMonth() {
-        // TODO build a map collecting for each month the average value of daily sunshine hours
-
-
-        return null;
+        // build a map collecting for each month the average value of daily sunshine hours
+        return this.getStations()
+                .stream()
+                .map(Station::getMeasurements)
+                .flatMap(Collection::stream)
+                .filter(measurement -> !Double.isNaN(measurement.getSolarHours()))
+                .collect(Collectors.groupingBy(
+                        measurement -> measurement.getDate().getMonth(),
+                        TreeMap::new,
+                        averagingDouble(Measurement::getSolarHours)
+                ));
     }
 
     /**

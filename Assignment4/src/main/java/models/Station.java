@@ -23,7 +23,7 @@ public class Station implements Comparable<Station> {
     public Collection<Measurement> getMeasurements() {
         // TODO return the measurements of this station
 
-        return new ArrayList<>(this.measurements.values());
+        return List.copyOf(new ArrayList<>(this.measurements.values()));
     }
 
     public int getStn() {
@@ -114,7 +114,8 @@ public class Station implements Comparable<Station> {
         double numberOfValidValuesFound = this.measurements.values()
                 .stream()
                 .mapToDouble(mapper::apply)
-                .sum();
+                .filter(n -> !Double.isNaN(n))
+                .count();
 
         return (int) numberOfValidValuesFound;
     }
