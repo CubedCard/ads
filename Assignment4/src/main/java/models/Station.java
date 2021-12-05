@@ -132,7 +132,7 @@ public class Station implements Comparable<Station> {
         // TODO calculate and return the total precipitation across the given period (Yaël)
         //  use the 'subMap' method to only process the measurements within the given period
 
-        return this.measurements.subMap(startDate, endDate).values()
+        return this.measurements.subMap(startDate, true, endDate, true).values()
                 .stream()
                 .filter(measurement -> !Double.isNaN(measurement.getPrecipitation()))
                 .mapToDouble(Measurement::getPrecipitation)
@@ -149,9 +149,10 @@ public class Station implements Comparable<Station> {
      *                      Double.NaN if no valid measurements are available from this period.
      */
     public double averageBetween(LocalDate startDate, LocalDate endDate, Function<Measurement,Double> mapper) {
-        return this.measurements.subMap(startDate, endDate).values()
+        return this.measurements.subMap(startDate, true, endDate, true).values()
                 .stream()
                 .mapToDouble(mapper::apply)
+                .filter(number -> !Double.isNaN(number))
                 .average()
                 .orElse(Double.NaN);
     }
