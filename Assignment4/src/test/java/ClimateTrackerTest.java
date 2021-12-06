@@ -70,6 +70,7 @@ public class ClimateTrackerTest {
                 0.01);
 
         Map<Integer,Double> maxHourlyPrecipitationTrend = climateTracker.annualMaximumTrend(Measurement::getMaxHourlyPrecipitation);
+        //System.out.println(maxHourlyPrecipitationTrend);
         assertArrayEquals(new double[] {24.7, 21.0, 1.6},
                 maxHourlyPrecipitationTrend.values().stream().mapToDouble(v->v).toArray(),
                 0.01);
