@@ -167,6 +167,25 @@ public class Station implements Comparable<Station> {
         return Integer.compare(this.getStn(), o.getStn());
     }
 
+    // Create an equals and hashcode
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Station station = (Station) o;
+
+        return stn == station.stn;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return stn;
+    }
+
     @Override
     public String toString() {
         return String.format("%d/%s", this.stn, this.name);

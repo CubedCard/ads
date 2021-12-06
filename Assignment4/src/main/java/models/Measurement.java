@@ -100,6 +100,8 @@ public class Measurement {
             measurement.setMaxTemperature(Double.NaN);
         }
 
+        //TODO Have to be tested on negative, but -1 == 0.0 as per update of ADS Assignment 4
+
         try {
             double readSolarHours = Double.parseDouble(fields[FIELD_SQ].trim()) * SCALE;
             measurement.setSolarHours(readSolarHours);
