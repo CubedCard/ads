@@ -82,8 +82,8 @@ public class Station implements Comparable<Station> {
 
         return this.measurements.values()
                 .stream()
-                .filter(measurement -> !Double.isNaN(measurement.getMaxWindGust()))
-                .mapToDouble(Measurement::getMaxWindGust)
+                .filter(measurement -> !Double.isNaN(measurement.getMaxTemperature()))
+                .mapToDouble(Measurement::getMaxTemperature)
                 .max()
                 .orElse(Double.NaN);
     }
