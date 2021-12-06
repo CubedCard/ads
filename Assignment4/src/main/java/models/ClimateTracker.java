@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.averagingDouble;
+import static java.util.stream.Collectors.maxBy;
 
 public class ClimateTracker {
     private final String MEASUREMENTS_FILE_PATTERN = ".*\\.txt";
@@ -107,7 +108,16 @@ public class ClimateTracker {
         // TODO build a map collecting for each year the average temperature in that year
 
 
-        return null;
+        return this.getStations()
+                .stream()
+                .map(Station::getMeasurements)
+                .flatMap(Collection::stream)
+                .filter(measurement -> !Double.isNaN(measurement.getAverageTemperature()))
+                .collect(Collectors.groupingBy(
+                        measurement -> measurement.getDate().getYear(),
+                        TreeMap::new,
+                        averagingDouble(Measurement::getAverageTemperature)
+                ));
     }
 
     /**
@@ -124,7 +134,19 @@ public class ClimateTracker {
         // TODO build a map collecting for each year the maximum value of the mapped quantity in that year
 
 
-        return null;
+        return this.getStations()
+                .stream()
+                .map(Station::getMeasurements)
+                .flatMap(Collection::stream)
+                .filter(measurement -> !Double.isNaN(mapper.apply(measurement)))
+                .collect(
+                        Collectors.toMap(
+                                measurement -> measurement.getDate().getYear(),
+                                mapper,
+                                Double::max,
+                                TreeMap::new
+                        )
+                );
     }
 
     /**
