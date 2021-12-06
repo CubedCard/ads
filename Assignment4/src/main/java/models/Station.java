@@ -97,8 +97,7 @@ public class Station implements Comparable<Station> {
         return measurements
                 .keySet()
                 .stream()
-                .sorted(Comparator.naturalOrder())
-                .findFirst();
+                .min(Comparator.naturalOrder());
     }
 
     /**
