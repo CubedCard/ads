@@ -105,24 +105,27 @@ public class Measurement {
         //TODO Have to be tested on negative, but -1 == 0.0 as per update of ADS Assignment 4
 
         try {
-            double readSolarHours = Double.parseDouble(fields[FIELD_SQ].trim()) * SCALE;
+            double readSolarHours = Double.parseDouble(fields[FIELD_SQ].trim());
             if (readSolarHours == TINY_VALUE_INDICATOR) readSolarHours = REAL_VALUE;
+            else readSolarHours = readSolarHours * SCALE;
             measurement.setSolarHours(readSolarHours);
         } catch (NumberFormatException ex) {
             measurement.setSolarHours(Double.NaN);
         }
 
         try {
-            double readPrecipitation = Double.parseDouble(fields[FIELD_RH].trim()) * SCALE;
+            double readPrecipitation = Double.parseDouble(fields[FIELD_RH].trim());
             if (readPrecipitation == TINY_VALUE_INDICATOR) readPrecipitation = REAL_VALUE;
+            else readPrecipitation = readPrecipitation * SCALE;
             measurement.setPrecipitation(readPrecipitation);
         } catch (NumberFormatException ex) {
             measurement.setPrecipitation(Double.NaN);
         }
 
         try {
-            double readMaxHourlyPrecipitation = Double.parseDouble(fields[FIELD_RHX].trim()) * SCALE;
+            double readMaxHourlyPrecipitation = Double.parseDouble(fields[FIELD_RHX].trim());
             if (readMaxHourlyPrecipitation == TINY_VALUE_INDICATOR) readMaxHourlyPrecipitation = REAL_VALUE;
+            else readMaxHourlyPrecipitation = readMaxHourlyPrecipitation * SCALE;
             measurement.setMaxHourlyPrecipitation(readMaxHourlyPrecipitation);
         } catch (NumberFormatException ex) {
             measurement.setMaxHourlyPrecipitation(Double.NaN);
