@@ -9,7 +9,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.averagingDouble;
-import static java.util.stream.Collectors.maxBy;
 
 public class ClimateTracker {
     private final String MEASUREMENTS_FILE_PATTERN = ".*\\.txt";
@@ -21,7 +20,7 @@ public class ClimateTracker {
     }
 
     public Station findStationById(int stn) {
-        // TODO find the station with the given stn
+        // find the station with the given stn
 
         return this.getStations()
                 .stream()
@@ -44,13 +43,13 @@ public class ClimateTracker {
 
         return this.getStations()
                 .stream()
-//                .sorted(Station::compareTo) // maybe use this in combination with a hashmap instead of a treemap
+                .sorted(Station::compareTo) // maybe use this in combination with a hashmap instead of a treemap
                 .collect(
                         Collectors.toMap(
                                 station -> station,
                                 Station::getMeasurementsSize,
                                 Integer::sum,
-                                TreeMap::new
+                                HashMap::new
                         )
                 );
     }
@@ -62,7 +61,7 @@ public class ClimateTracker {
      * @return
      */
     public Map<Station, LocalDate> firstDayOfMeasurementByStation() {
-        // TODO build a map resolving for each station the date of its first day of measurements
+        // build a map resolving for each station the date of its first day of measurements
 
         return stations.values()
                 .stream()
@@ -85,7 +84,7 @@ public class ClimateTracker {
      * @return a map with stations as keys and the number of valid values per station as values
      */
     public Map<Station, Integer> numberOfValidValuesByStation(Function<Measurement, Double> mapper) {
-        // TODO build a map resolving for each station the number of valid values for the specified quantity.
+        // build a map resolving for each station the number of valid values for the specified quantity.
 
         return this.getStations()
                 .stream()
@@ -105,7 +104,7 @@ public class ClimateTracker {
      * @return a map(Y,T) that provides for each year Y the average temperature T of that year
      */
     public Map<Integer, Double> annualAverageTemperatureTrend() {
-        // TODO build a map collecting for each year the average temperature in that year
+        // build a map collecting for each year the average temperature in that year
 
 
         return this.getStations()
@@ -131,7 +130,7 @@ public class ClimateTracker {
      * @return a map(Y,Q) that provides for each year Y the maximum value Q of the specified quantity
      */
     public Map<Integer, Double> annualMaximumTrend(Function<Measurement, Double> mapper) {
-        // TODO build a map collecting for each year the maximum value of the mapped quantity in that year
+        // build a map collecting for each year the maximum value of the mapped quantity in that year
 
 
         return this.getStations()
