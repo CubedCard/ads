@@ -16,6 +16,8 @@ public class Measurement {
     private final static int FIELD_RHX = 23;
     private final static int NUM_FIELDS = 24;
     private final static double SCALE = 0.1;
+    private final static int TINY_VALUE_INDICATOR = -1;
+    private final static double REAL_VALUE = 0.0;
 
     private final Station station;            // col0, STN
     private final LocalDate date;             // col1, YYMMDDDD
@@ -49,7 +51,7 @@ public class Measurement {
         String[] fields = textLine.split(",");
         if (fields.length < NUM_FIELDS) return null;
 
-        // TODO create a new Measurement instance
+        // create a new Measurement instance
         Measurement measurement;
 
         try {
@@ -104,6 +106,7 @@ public class Measurement {
 
         try {
             double readSolarHours = Double.parseDouble(fields[FIELD_SQ].trim()) * SCALE;
+            if (readSolarHours == TINY_VALUE_INDICATOR) readSolarHours = REAL_VALUE;
             measurement.setSolarHours(readSolarHours);
         } catch (NumberFormatException ex) {
             measurement.setSolarHours(Double.NaN);
@@ -111,6 +114,7 @@ public class Measurement {
 
         try {
             double readPrecipitation = Double.parseDouble(fields[FIELD_RH].trim()) * SCALE;
+            if (readPrecipitation == TINY_VALUE_INDICATOR) readPrecipitation = REAL_VALUE;
             measurement.setPrecipitation(readPrecipitation);
         } catch (NumberFormatException ex) {
             measurement.setPrecipitation(Double.NaN);
@@ -118,6 +122,7 @@ public class Measurement {
 
         try {
             double readMaxHourlyPrecipitation = Double.parseDouble(fields[FIELD_RHX].trim()) * SCALE;
+            if (readMaxHourlyPrecipitation == TINY_VALUE_INDICATOR) readMaxHourlyPrecipitation = REAL_VALUE;
             measurement.setMaxHourlyPrecipitation(readMaxHourlyPrecipitation);
         } catch (NumberFormatException ex) {
             measurement.setMaxHourlyPrecipitation(Double.NaN);

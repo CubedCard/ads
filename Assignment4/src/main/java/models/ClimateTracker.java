@@ -9,7 +9,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.averagingDouble;
-import static java.util.stream.Collectors.averagingInt;
 
 public class ClimateTracker {
     private final String MEASUREMENTS_FILE_PATTERN = ".*\\.txt";
@@ -44,7 +43,7 @@ public class ClimateTracker {
 
         return this.getStations()
                 .stream()
-                .sorted(Station::compareTo) // maybe use this in combination with a hashmap instead of a treemap
+                .sorted(Station::compareTo)
                 .collect(
                         Collectors.toMap(
                                 station -> station,
@@ -66,12 +65,13 @@ public class ClimateTracker {
 
         return stations.values()
                 .stream()
+                .sorted(Station::compareTo)
                 .filter(station -> !station.getMeasurements().isEmpty())
                 .collect(Collectors.toMap(
                                 station -> station,
                                 station -> station.firstDayOfMeasurement().get(),
                                 (a, b) -> b,
-                                TreeMap::new
+                                HashMap::new
                         )
                 );
     }

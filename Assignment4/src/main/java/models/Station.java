@@ -16,12 +16,12 @@ public class Station implements Comparable<Station> {
     public Station(int id, String name) {
         this.stn = id;
         this.name = name;
-        // TODO initialize the measurements data structure with a suitable implementation class.
-        this.measurements = new TreeMap<>(); // TODO decide what data structure to use
+        //  initialize the measurements' data structure with a suitable implementation class.
+        this.measurements = new TreeMap<>(); //  decide what data structure to use
     }
 
     public Collection<Measurement> getMeasurements() {
-        // TODO return the measurements of this station
+        //  return the measurements of this station
 
         return List.copyOf(new ArrayList<>(this.measurements.values()));
     }
@@ -60,7 +60,7 @@ public class Station implements Comparable<Station> {
     public int addMeasurements(Collection<Measurement> newMeasurements) {
         int oldSize = this.getMeasurements().size();
 
-        // TODO add all newMeasurements to the station (Yaël)
+        //  add all newMeasurements to the station (Yaël)
         //  ignore those who are not related to this station and entries with a duplicate date.
 
         newMeasurements.stream()
@@ -82,6 +82,7 @@ public class Station implements Comparable<Station> {
 
         return this.measurements.values()
                 .stream()
+                .filter(measurement -> !Double.isNaN(measurement.getMaxWindGust()))
                 .mapToDouble(Measurement::getMaxWindGust)
                 .max()
                 .orElse(Double.NaN);
@@ -92,7 +93,7 @@ public class Station implements Comparable<Station> {
      *          returns Optional.empty() if no measurements are available
      */
     public Optional<LocalDate> firstDayOfMeasurement() {
-        // TODO get the date of the first measurement at this station (Yaël)
+        //  get the date of the first measurement at this station (Yaël)
 
         return measurements
                 .keySet()
@@ -108,7 +109,7 @@ public class Station implements Comparable<Station> {
      * @return          the number of valid values found
      */
     public int numValidValues(Function<Measurement,Double> mapper) {
-        // TODO count the number of valid values that can be accessed in the measurements collection (Jip)
+        //  count the number of valid values that can be accessed in the measurements collection (Jip)
         //  by means of the mapper access function
         double numberOfValidValuesFound = this.measurements.values()
                 .stream()
