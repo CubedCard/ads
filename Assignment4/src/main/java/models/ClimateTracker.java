@@ -67,7 +67,8 @@ public class ClimateTracker {
                 .stream()
                 .sorted(Station::compareTo)
                 .filter(station -> !station.getMeasurements().isEmpty())
-                .collect(Collectors.toMap(
+                .collect(
+                        Collectors.toMap(
                                 station -> station,
                                 station -> station.firstDayOfMeasurement().get(),
                                 (a, b) -> b,
@@ -113,11 +114,13 @@ public class ClimateTracker {
                 .map(Station::getMeasurements)
                 .flatMap(Collection::stream)
                 .filter(measurement -> !Double.isNaN(measurement.getAverageTemperature()))
-                .collect(Collectors.groupingBy(
-                        measurement -> measurement.getDate().getYear(),
-                        TreeMap::new,
-                        averagingDouble(Measurement::getAverageTemperature)
-                ));
+                .collect(
+                        Collectors.groupingBy(
+                                measurement -> measurement.getDate().getYear(),
+                                TreeMap::new,
+                                averagingDouble(Measurement::getAverageTemperature)
+                        )
+                );
     }
 
     /**
@@ -164,11 +167,13 @@ public class ClimateTracker {
                 .map(Station::getMeasurements)
                 .flatMap(Collection::stream)
                 .filter(measurement -> !Double.isNaN(measurement.getSolarHours()))
-                .collect(Collectors.groupingBy(
-                        measurement -> measurement.getDate().getMonth(),
-                        TreeMap::new,
-                        averagingDouble(Measurement::getSolarHours)
-                ));
+                .collect(
+                        Collectors.groupingBy(
+                                measurement -> measurement.getDate().getMonth(),
+                                TreeMap::new,
+                                averagingDouble(Measurement::getSolarHours)
+                        )
+                );
     }
 
     /**
@@ -192,11 +197,13 @@ public class ClimateTracker {
                 .flatMap(Collection::stream)
                 .filter(measurement -> !Double.isNaN(measurement.getSolarHours()))
                 .filter(measurement -> measurement.getMinTemperature() <= 0)
-                .collect(Collectors.groupingBy(
-                        measurement -> measurement.getDate().getYear(),
-                        TreeMap::new,
-                        Collectors.summingDouble(Measurement::getMinTemperature)
-                ));
+                .collect(
+                        Collectors.groupingBy(
+                                measurement -> measurement.getDate().getYear(),
+                                TreeMap::new,
+                                Collectors.summingDouble(Measurement::getMinTemperature)
+                        )
+                );
 
         // if the map is empty, then there is no coldest year
         if (map.isEmpty()) return -1;
