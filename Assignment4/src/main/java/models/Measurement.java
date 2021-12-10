@@ -94,15 +94,12 @@ public class Measurement {
             measurement.setMinTemperature(Double.NaN);
         }
 
-
         try {
             double readMaxTemperature = Double.parseDouble(fields[FIELD_TX].trim()) * SCALE;
             measurement.setMaxTemperature(readMaxTemperature);
         } catch (NumberFormatException ex) {
             measurement.setMaxTemperature(Double.NaN);
         }
-
-        //TODO Have to be tested on negative, but -1 == 0.0 as per update of ADS Assignment 4
 
         try {
             double readSolarHours = Double.parseDouble(fields[FIELD_SQ].trim());

@@ -60,7 +60,7 @@ public class Station implements Comparable<Station> {
     public int addMeasurements(Collection<Measurement> newMeasurements) {
         int oldSize = this.getMeasurements().size();
 
-        //  add all newMeasurements to the station (Yaël)
+        //  add all newMeasurements to the station
         //  ignore those who are not related to this station and entries with a duplicate date.
 
         newMeasurements.stream()
@@ -78,7 +78,7 @@ public class Station implements Comparable<Station> {
      *          returns Double.NaN when no valid measurements are available
      */
     public double allTimeMaxTemperature() {
-        // TODO calculate the maximum wind gust speed across all valid measurements (Jip)
+        // calculate the maximum wind gust speed across all valid measurements
 
         return this.measurements.values()
                 .stream()
@@ -109,7 +109,7 @@ public class Station implements Comparable<Station> {
      * @return          the number of valid values found
      */
     public int numValidValues(Function<Measurement,Double> mapper) {
-        //  count the number of valid values that can be accessed in the measurements collection (Jip)
+        //  count the number of valid values that can be accessed in the measurements' collection
         //  by means of the mapper access function
         double numberOfValidValuesFound = this.measurements.values()
                 .stream()
@@ -129,7 +129,7 @@ public class Station implements Comparable<Station> {
      *                      0.0 if no measurements have been made in this period.
      */
     public double totalPrecipitationBetween(LocalDate startDate, LocalDate endDate) {
-        // TODO calculate and return the total precipitation across the given period (Yaël)
+        //  calculate and return the total precipitation across the given period
         //  use the 'subMap' method to only process the measurements within the given period
 
         return this.measurements.subMap(startDate, true, endDate, true).values()
@@ -161,7 +161,7 @@ public class Station implements Comparable<Station> {
         return this.measurements.size();
     }
 
-    // TODO any other methods required to make it work
+    // any other methods required to make it work
 
     @Override
     public int compareTo(Station o) {

@@ -58,7 +58,7 @@ public class ClimateTracker {
      * calculates for each station the date of the first day of its measurements
      * stations without measurements shall be excluded from the result
      *
-     * @return
+     * @return a map with the date of the first measurement by station
      */
     public Map<Station, LocalDate> firstDayOfMeasurementByStation() {
         // build a map resolving for each station the date of its first day of measurements
@@ -111,8 +111,7 @@ public class ClimateTracker {
 
         return this.getStations()
                 .stream()
-                .map(Station::getMeasurements)
-                .flatMap(Collection::stream)
+                .flatMap(station -> station.getMeasurements().stream())
                 .filter(measurement -> !Double.isNaN(measurement.getAverageTemperature()))
                 .collect(
                         Collectors.groupingBy(
@@ -139,8 +138,7 @@ public class ClimateTracker {
 
         return this.getStations()
                 .stream()
-                .map(Station::getMeasurements)
-                .flatMap(Collection::stream)
+                .flatMap(station -> station.getMeasurements().stream())
                 .filter(measurement -> !Double.isNaN(mapper.apply(measurement)))
                 .collect(
                         Collectors.toMap(
@@ -164,8 +162,7 @@ public class ClimateTracker {
         // build a map collecting for each month the average value of daily sunshine hours
         return this.getStations()
                 .stream()
-                .map(Station::getMeasurements)
-                .flatMap(Collection::stream)
+                .flatMap(station -> station.getMeasurements().stream())
                 .filter(measurement -> !Double.isNaN(measurement.getSolarHours()))
                 .collect(
                         Collectors.groupingBy(
@@ -193,10 +190,10 @@ public class ClimateTracker {
 
         Map<Integer, Double> map = this.getStations()
                 .stream()
-                .map(Station::getMeasurements)
-                .flatMap(Collection::stream)
-                .filter(measurement -> !Double.isNaN(measurement.getSolarHours()))
-                .filter(measurement -> measurement.getMinTemperature() <= 0)
+                .flatMap(station -> station.getMeasurements().stream())
+//                .filter(measurement -> !Double.isNaN(measurement.getSolarHours()))
+                // in the javadoc it says two < 0 and <= 0, so I chose the most logical
+                .filter(measurement -> measurement.getMinTemperature() < 0)
                 .collect(
                         Collectors.groupingBy(
                                 measurement -> measurement.getDate().getYear(),
@@ -218,7 +215,7 @@ public class ClimateTracker {
     /**
      * imports all station and measurement information
      *
-     * @param folderPath
+     * @param folderPath a string containing the path to the file that needs to be read
      */
     public void importClimateDataFromVault(String folderPath) {
         this.stations.clear();
@@ -235,7 +232,7 @@ public class ClimateTracker {
     /**
      * traverses the purchases vault recursively and processes every data file that it finds
      *
-     * @param filePath
+     * @param filePath a string containing the path to the file that needs to be read
      */
     public void importMeasurementsFromVault(String filePath) {
 
@@ -312,7 +309,7 @@ public class ClimateTracker {
      * imports another batch of raw purchase data from the filePath text file
      * and merges the purchase amounts with the earlier imported and accumulated collection in this.purchases
      *
-     * @param filePath
+     * @param filePath a string containing the path to the file that needs to be read
      */
     private void importMeasurementsFromFile(String filePath) {
 
@@ -338,8 +335,8 @@ public class ClimateTracker {
     /**
      * helper method to create a scanner on a file an handle the exception
      *
-     * @param filePath
-     * @return
+     * @param filePath a string containing the path to the file that needs to be read
+     * @return a new scanner to the filePath
      */
     private static Scanner createFileScanner(String filePath) {
         try {
