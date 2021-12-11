@@ -17,7 +17,7 @@ public class Station implements Comparable<Station> {
         this.stn = id;
         this.name = name;
         //  initialize the measurements' data structure with a suitable implementation class.
-        this.measurements = new TreeMap<>(); //  decide what data structure to use
+        this.measurements = new TreeMap<>();
     }
 
     public Collection<Measurement> getMeasurements() {
