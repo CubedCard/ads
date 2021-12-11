@@ -39,7 +39,7 @@ public class ClimateTracker {
      * @return a map which contains the amount of measurements per station.
      */
     public Map<Station, Integer> numberOfMeasurementsByStation() {
-        // TODO build a map resolving for each station its number of registered Measurement instances
+        // build a map resolving for each station its number of registered Measurement instances
 
         return this.getStations()
                 .stream()
