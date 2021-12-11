@@ -2,6 +2,8 @@ package models;
 
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 
 public class Measurement {
     private final static int FIELD_STN = 0;
@@ -41,13 +43,14 @@ public class Measurement {
      * converts integer values to doubles as per unit of measure indicators
      * empty or corrupt values are replaced by Double.NaN
      * -1 values that indicate < 0.05 are replaced by 0.0
-     * @param textLine  string to be converted to a Measurement instance
-     * @param stations  a map of Stations that can be accessed by station number STN
-     * @return          a new Measurement instance that records all data values of above quantities
-     *                  null if the station number cannot be resolved,
-     *                      or the record is incomplete or cannot be parsed
+     *
+     * @param textLine string to be converted to a Measurement instance
+     * @param stations a map of Stations that can be accessed by station number STN
+     * @return a new Measurement instance that records all data values of above quantities
+     * null if the station number cannot be resolved,
+     * or the record is incomplete or cannot be parsed
      */
-    public static Measurement fromLine(String textLine, Map<Integer,Station> stations) {
+    public static Measurement fromLine(String textLine, Map<Integer, Station> stations) {
         String[] fields = textLine.split(",");
         if (fields.length < NUM_FIELDS) return null;
 
@@ -65,70 +68,39 @@ public class Measurement {
         }
 
         // further, parse and convert and store all relevant quantities
-
-        try {
-            double readAverageWindSpeed = Double.parseDouble(fields[FIELD_FG].trim()) * SCALE;
-            measurement.setAverageWindSpeed(readAverageWindSpeed);
-        } catch (NumberFormatException ex) {
-            measurement.setAverageWindSpeed(Double.NaN);
-        }
-
-        try {
-            double readMaxWindGust = Double.parseDouble(fields[FIELD_FXX].trim()) * SCALE;
-            measurement.setMaxWindGust(readMaxWindGust);
-        } catch (NumberFormatException ex) {
-            measurement.setMaxWindGust(Double.NaN);
-        }
-
-        try {
-            double readAverageTemperature = Double.parseDouble(fields[FIELD_TG].trim()) * SCALE;
-            measurement.setAverageTemperature(readAverageTemperature);
-        } catch (NumberFormatException ex) {
-            measurement.setAverageTemperature(Double.NaN);
-        }
-
-        try {
-            double readMinTemperature = Double.parseDouble(fields[FIELD_TN].trim()) * SCALE;
-            measurement.setMinTemperature(readMinTemperature);
-        } catch (NumberFormatException ex) {
-            measurement.setMinTemperature(Double.NaN);
-        }
-
-        try {
-            double readMaxTemperature = Double.parseDouble(fields[FIELD_TX].trim()) * SCALE;
-            measurement.setMaxTemperature(readMaxTemperature);
-        } catch (NumberFormatException ex) {
-            measurement.setMaxTemperature(Double.NaN);
-        }
-
-        try {
-            double readSolarHours = Double.parseDouble(fields[FIELD_SQ].trim());
-            if (readSolarHours == TINY_VALUE_INDICATOR) readSolarHours = REAL_VALUE;
-            else readSolarHours = readSolarHours * SCALE;
-            measurement.setSolarHours(readSolarHours);
-        } catch (NumberFormatException ex) {
-            measurement.setSolarHours(Double.NaN);
-        }
-
-        try {
-            double readPrecipitation = Double.parseDouble(fields[FIELD_RH].trim());
-            if (readPrecipitation == TINY_VALUE_INDICATOR) readPrecipitation = REAL_VALUE;
-            else readPrecipitation = readPrecipitation * SCALE;
-            measurement.setPrecipitation(readPrecipitation);
-        } catch (NumberFormatException ex) {
-            measurement.setPrecipitation(Double.NaN);
-        }
-
-        try {
-            double readMaxHourlyPrecipitation = Double.parseDouble(fields[FIELD_RHX].trim());
-            if (readMaxHourlyPrecipitation == TINY_VALUE_INDICATOR) readMaxHourlyPrecipitation = REAL_VALUE;
-            else readMaxHourlyPrecipitation = readMaxHourlyPrecipitation * SCALE;
-            measurement.setMaxHourlyPrecipitation(readMaxHourlyPrecipitation);
-        } catch (NumberFormatException ex) {
-            measurement.setMaxHourlyPrecipitation(Double.NaN);
-        }
+        setField(measurement, fields[FIELD_FG].trim(), Measurement::setAverageWindSpeed, false);
+        setField(measurement, fields[FIELD_FXX].trim(), Measurement::setMaxWindGust, false);
+        setField(measurement, fields[FIELD_TG].trim(), Measurement::setAverageTemperature, false);
+        setField(measurement, fields[FIELD_TN].trim(), Measurement::setMinTemperature, false);
+        setField(measurement, fields[FIELD_TX].trim(), Measurement::setMaxTemperature, false);
+        setField(measurement, fields[FIELD_SQ].trim(), Measurement::setSolarHours, true);
+        setField(measurement, fields[FIELD_RH].trim(), Measurement::setPrecipitation, true);
+        setField(measurement, fields[FIELD_RHX].trim(), Measurement::setMaxHourlyPrecipitation, true);
 
         return measurement;
+    }
+
+    private static void setField(Measurement measurement, String field, BiConsumer<Measurement, Double> setter,
+                                 boolean hasTinyValue) {
+        try {
+            double value = Double.parseDouble(field);
+            /*
+            if the field supports the 'tiny value indicator' and the value is equal to this indicator, then the
+            value should change to the "real value"
+             */
+            if (hasTinyValue) {
+                if (value == TINY_VALUE_INDICATOR) {
+                    value = REAL_VALUE;
+                }
+            }
+            /*
+            using the BiConsumer method that was provided, to set the value of the right field in the measurement
+            to the value that was in the given field
+            */
+            setter.accept(measurement, value * SCALE);
+        } catch (NumberFormatException ex) {
+            setter.accept(measurement, Double.NaN);
+        }
     }
 
     public Station getStation() {
