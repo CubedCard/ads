@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * This class <description of functionality>
+ * This class tests the ClimateTracker class
  *
  * @author jipderksen
  */
