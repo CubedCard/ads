@@ -13,14 +13,14 @@ import static java.util.stream.Collectors.averagingDouble;
 public class ClimateTracker {
     private final String MEASUREMENTS_FILE_PATTERN = ".*\\.txt";
 
-    private Map<Integer, Station> stations;        // all available weather stations organised by Station Number (STN)
+    private Map<Integer, Station> stations; // All available weather stations organised by Station Number (STN)
 
     public Set<Station> getStations() {
         return Set.of(stations.values().toArray(Station[]::new));
     }
 
     public Station findStationById(int stn) {
-        // find the station with the given stn
+        // Finds the station with the given stn
 
         return this.getStations()
                 .stream()
@@ -39,7 +39,7 @@ public class ClimateTracker {
      * @return a map which contains the amount of measurements per station.
      */
     public Map<Station, Integer> numberOfMeasurementsByStation() {
-        // build a map resolving for each station its number of registered Measurement instances
+        // Builds a map resolving for each station its number of registered Measurement instances
 
         return this.getStations()
                 .stream()
@@ -61,7 +61,7 @@ public class ClimateTracker {
      * @return a map with the date of the first measurement by station
      */
     public Map<Station, LocalDate> firstDayOfMeasurementByStation() {
-        // build a map resolving for each station the date of its first day of measurements
+        // Builds a map resolving for each station the date of its first day of measurements
 
         // Sort the incoming stream with the implemented compareTo method of Station.
         // Then filter and collect to return the right output.
@@ -88,7 +88,7 @@ public class ClimateTracker {
      * @return a map with stations as keys and the number of valid values per station as values
      */
     public Map<Station, Integer> numberOfValidValuesByStation(Function<Measurement, Double> mapper) {
-        // build a map resolving for each station the number of valid values for the specified quantity.
+        // Builds a map resolving for each station the number of valid values for the specified quantity.
 
         return this.getStations()
                 .stream()
@@ -108,7 +108,7 @@ public class ClimateTracker {
      * @return a map(Y,T) that provides for each year Y the average temperature T of that year
      */
     public Map<Integer, Double> annualAverageTemperatureTrend() {
-        // build a map collecting for each year the average temperature in that year
+        // Builds a map collecting for each year the average temperature in that year
 
         return this.getStations()
                 .stream()
@@ -134,7 +134,7 @@ public class ClimateTracker {
      * @return a map(Y,Q) that provides for each year Y the maximum value Q of the specified quantity
      */
     public Map<Integer, Double> annualMaximumTrend(Function<Measurement, Double> mapper) {
-        // build a map collecting for each year the maximum value of the mapped quantity in that year
+        // Builds a map collecting for each year the maximum value of the mapped quantity in that year
 
         return this.getStations()
                 .stream()
@@ -159,7 +159,7 @@ public class ClimateTracker {
      * @return a map(M,SQ) that provides for each month M the average daily sunshine hours SQ across all times
      */
     public Map<Month, Double> allTimeAverageDailySolarByMonth() {
-        // build a map collecting for each month the average value of daily sunshine hours
+        // Builds a map collecting for each month the average value of daily sunshine hours
         return this.getStations()
                 .stream()
                 .flatMap(station -> station.getMeasurements().stream())
@@ -184,14 +184,14 @@ public class ClimateTracker {
      * return -1 if no valid minimum temperature measurements are available
      */
     public int coldestYear() {
-        // determine the coldest year
-        // hint: first build a helper map that accumulates the yearsums of negative minimum temperatures
-        //       then find the coldest year in that helper map
+        /*
+        Determines the coldest year by first building a helper map that accumulates the year sums of negative
+        minimum temperatures then finds the coldest year in that helper map
+        */
 
         Map<Integer, Double> map = this.getStations()
                 .stream()
                 .flatMap(station -> station.getMeasurements().stream())
-//                .filter(measurement -> !Double.isNaN(measurement.getSolarHours()))
                 // in the javadoc it says two < 0 and <= 0, so I chose the most logical
                 .filter(measurement -> measurement.getMinTemperature() < 0)
                 .collect(

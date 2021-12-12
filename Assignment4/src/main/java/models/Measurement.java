@@ -3,7 +3,6 @@ package models;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
 
 public class Measurement {
     private final static int FIELD_STN = 0;
@@ -54,7 +53,7 @@ public class Measurement {
         String[] fields = textLine.split(",");
         if (fields.length < NUM_FIELDS) return null;
 
-        // create a new Measurement instance
+        // Create a new Measurement instance
         Measurement measurement;
 
         try {
@@ -67,7 +66,7 @@ public class Measurement {
             return null;
         }
 
-        // further, parse and convert and store all relevant quantities
+        // Further parse, convert and store all relevant quantities
         setField(measurement, fields[FIELD_FG].trim(), Measurement::setAverageWindSpeed, false);
         setField(measurement, fields[FIELD_FXX].trim(), Measurement::setMaxWindGust, false);
         setField(measurement, fields[FIELD_TG].trim(), Measurement::setAverageTemperature, false);
@@ -85,7 +84,7 @@ public class Measurement {
         try {
             double value = Double.parseDouble(field);
             /*
-            if the field supports the 'tiny value indicator' and the value is equal to this indicator, then the
+            If the field supports the 'tiny value indicator' and the value is equal to this indicator, then the
             value should change to the "real value"
              */
             if (hasTinyValue) {
@@ -94,7 +93,7 @@ public class Measurement {
                 }
             }
             /*
-            using the BiConsumer method that was provided, to set the value of the right field in the measurement
+            Using the BiConsumer method that was provided, to set the value of the right field in the measurement
             to the value that was in the given field
             */
             setter.accept(measurement, value * SCALE);

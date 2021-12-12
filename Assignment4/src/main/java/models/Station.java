@@ -16,13 +16,12 @@ public class Station implements Comparable<Station> {
     public Station(int id, String name) {
         this.stn = id;
         this.name = name;
-        //  initialize the measurements' data structure with a suitable implementation class.
+        // Initializes the measurements' data structure with a suitable implementation class.
         this.measurements = new TreeMap<>();
     }
 
     public Collection<Measurement> getMeasurements() {
-        //  return the measurements of this station
-
+        // Returns the measurements of this station
         return List.copyOf(new ArrayList<>(this.measurements.values()));
     }
 
@@ -36,9 +35,10 @@ public class Station implements Comparable<Station> {
 
     /**
      * import station number and name from a text line
-     * @param textLine
-     * @return  a new Station instance for this data
-     *          or null if the data format does not comply
+     *
+     * @param textLine String to be converted to a Station instance
+     * @return a new Station instance for this data
+     * or null if the data format does not comply
      */
     public static Station fromLine(String textLine) {
         String[] fields = textLine.split(",");
@@ -54,14 +54,15 @@ public class Station implements Comparable<Station> {
      * Add a collection of new measurements to this station.
      * Measurements that are not related to this station
      * and measurements with a duplicate date shall be ignored and not added
-     * @param newMeasurements
-     * @return  the nett number of measurements which have been added.
+     *
+     * @param newMeasurements the measurements that should be added to this.measurements
+     * @return the nett number of measurements which have been added.
      */
     public int addMeasurements(Collection<Measurement> newMeasurements) {
         int oldSize = this.getMeasurements().size();
 
-        //  add all newMeasurements to the station
-        //  ignore those who are not related to this station and entries with a duplicate date.
+        //  Add all newMeasurements to the station
+        //  Ignore those who are not related to this station and entries with a duplicate date.
 
         newMeasurements.stream()
                 .filter(measurement -> measurement.getStation().equals(this))
@@ -74,11 +75,12 @@ public class Station implements Comparable<Station> {
 
     /**
      * calculates the all-time maximum temperature for this station
-     * @return  the maximum temperature ever measured at this station
-     *          returns Double.NaN when no valid measurements are available
+     *
+     * @return the maximum temperature ever measured at this station
+     * returns Double.NaN when no valid measurements are available
      */
     public double allTimeMaxTemperature() {
-        // calculate the maximum wind gust speed across all valid measurements
+        // Calculates and returns the maximum temperature across all valid measurements
 
         return this.measurements.values()
                 .stream()
@@ -89,11 +91,11 @@ public class Station implements Comparable<Station> {
     }
 
     /**
-     * @return  the date of the first day of a measurement for this station
-     *          returns Optional.empty() if no measurements are available
+     * @return the date of the first day of a measurement for this station
+     * returns Optional.empty() if no measurements are available
      */
     public Optional<LocalDate> firstDayOfMeasurement() {
-        //  get the date of the first measurement at this station (Yaël)
+        // Gets the date of the first measurement at this station
 
         return measurements
                 .keySet()
@@ -105,12 +107,16 @@ public class Station implements Comparable<Station> {
      * calculates the number of valid values of the data field that is specified by the mapper
      * invalid or empty values should be represented by Double.NaN
      * this method can be used to check on different types of measurements each with their own mapper
-     * @param mapper    the getter method of the data field to be checked.
-     * @return          the number of valid values found
+     *
+     * @param mapper the getter method of the data field to be checked.
+     * @return the number of valid values found
      */
-    public int numValidValues(Function<Measurement,Double> mapper) {
-        //  count the number of valid values that can be accessed in the measurements' collection
-        //  by means of the mapper access function
+    public int numValidValues(Function<Measurement, Double> mapper) {
+        /*
+        Counts the number of valid values that can be accessed in the measurements' collection
+        by means of the mapper access function
+        */
+
         double numberOfValidValuesFound = this.measurements.values()
                 .stream()
                 .mapToDouble(mapper::apply)
@@ -123,14 +129,15 @@ public class Station implements Comparable<Station> {
     /**
      * calculates the total precipitation at this station
      * across the time period between startDate and endDate (inclusive)
-     * @param startDate     the start date of the period of accumulation (inclusive)
-     * @param endDate       the end date of the period of accumulation (inclusive)
-     * @return              the total precipitation value across the period
-     *                      0.0 if no measurements have been made in this period.
+     *
+     * @param startDate the start date of the period of accumulation (inclusive)
+     * @param endDate   the end date of the period of accumulation (inclusive)
+     * @return the total precipitation value across the period
+     * 0.0 if no measurements have been made in this period.
      */
     public double totalPrecipitationBetween(LocalDate startDate, LocalDate endDate) {
-        //  calculate and return the total precipitation across the given period
-        //  use the 'subMap' method to only process the measurements within the given period
+        // Calculates and returns the total precipitation across the given period
+        // Uses the 'subMap' method to only process the measurements within the given period
 
         return this.measurements.subMap(startDate, true, endDate, true).values()
                 .stream()
@@ -142,13 +149,17 @@ public class Station implements Comparable<Station> {
     /**
      * calculates the average of all valid measurements of the quantity selected by the mapper function
      * across the time period between startDate and endDate (inclusive)
-     * @param startDate     the start date of the period of averaging (inclusive)
-     * @param endDate       the end date of the period of averaging (inclusive)
-     * @param mapper        a getter method that obtains the double value from a measurement instance to be averaged
-     * @return              the average of all valid values of the selected quantity across the period
-     *                      Double.NaN if no valid measurements are available from this period.
+     *
+     * @param startDate the start date of the period of averaging (inclusive)
+     * @param endDate   the end date of the period of averaging (inclusive)
+     * @param mapper    a getter method that obtains the double value from a measurement instance to be averaged
+     * @return the average of all valid values of the selected quantity across the period
+     * Double.NaN if no valid measurements are available from this period.
      */
-    public double averageBetween(LocalDate startDate, LocalDate endDate, Function<Measurement,Double> mapper) {
+    public double averageBetween(LocalDate startDate, LocalDate endDate, Function<Measurement, Double> mapper) {
+        // Calculates and returns the average value of the quantity mapper across the given period
+        // Uses the 'subMap' method to only process the measurements within the given period
+
         return this.measurements.subMap(startDate, true, endDate, true).values()
                 .stream()
                 .mapToDouble(mapper::apply)
@@ -171,8 +182,7 @@ public class Station implements Comparable<Station> {
     // Create an equals and hashcode
 
     @Override
-    public boolean equals(Object o)
-    {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -182,8 +192,7 @@ public class Station implements Comparable<Station> {
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return stn;
     }
 
