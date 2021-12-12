@@ -13,7 +13,7 @@ public class ClimateAnalysisMain {
 
         climateTracker.importClimateDataFromVault(ClimateAnalysisMain.class.getResource("/knmi").getPath());
 
-        System.out.println("\n1. Total Number of measurements by station:\n" +
+        System.out.println("\n1. Total number of measurements by station:\n" +
                 climateTracker.numberOfMeasurementsByStation());
         System.out.println("\n2. First day of measurement by station:\n" +
                 climateTracker.firstDayOfMeasurementByStation());
