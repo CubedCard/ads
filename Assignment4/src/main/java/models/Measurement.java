@@ -79,6 +79,16 @@ public class Measurement {
         return measurement;
     }
 
+    /**
+     * This method sets a chosen field of the measurement that was given.
+     * If a NumberFormatException occurs, then the field should be set to Double.NaN.
+     * When the field supports the 'tiny value indicator', then other checks are necessary.
+     *
+     * @param measurement the measurement to set a field of
+     * @param field the field to read the value of
+     * @param setter the BiConsumer (setter) that is used to set a field in the given measurement
+     * @param hasTinyValue whether of not the value supports the 'tiny value indicator'
+     */
     private static void setField(Measurement measurement, String field, BiConsumer<Measurement, Double> setter,
                                  boolean hasTinyValue) {
         try {
