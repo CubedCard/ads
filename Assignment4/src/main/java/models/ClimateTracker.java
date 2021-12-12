@@ -136,7 +136,6 @@ public class ClimateTracker {
     public Map<Integer, Double> annualMaximumTrend(Function<Measurement, Double> mapper) {
         // build a map collecting for each year the maximum value of the mapped quantity in that year
 
-
         return this.getStations()
                 .stream()
                 .flatMap(station -> station.getMeasurements().stream())
