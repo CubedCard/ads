@@ -63,6 +63,8 @@ public class ClimateTracker {
     public Map<Station, LocalDate> firstDayOfMeasurementByStation() {
         // build a map resolving for each station the date of its first day of measurements
 
+        // Sort the incoming stream with the implemented compareTo method of Station.
+        // Then filter and collect to return the right output.
         return stations.values()
                 .stream()
                 .sorted(Station::compareTo)
@@ -107,7 +109,6 @@ public class ClimateTracker {
      */
     public Map<Integer, Double> annualAverageTemperatureTrend() {
         // build a map collecting for each year the average temperature in that year
-
 
         return this.getStations()
                 .stream()
