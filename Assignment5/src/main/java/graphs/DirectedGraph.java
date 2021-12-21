@@ -103,7 +103,6 @@ public class DirectedGraph<V extends Identifiable, E> {
     public boolean addEdge(V fromVertex, V toVertex, E newEdge) {
         // TODO add (directed) newEdge to the graph between fromVertex and toVertex
 
-
         return false;
     }
 
@@ -158,6 +157,15 @@ public class DirectedGraph<V extends Identifiable, E> {
         if (fromVertex == null || toVertex == null) return null;
         // TODO retrieve the directed edge between vertices fromVertex and toVertex from the graph
 
+        Map<V, E> fromVertexMap = this.edges.getOrDefault(fromVertex, null);
+        Map<V, E> toVertexMap = this.edges.getOrDefault(toVertex, null);
+
+        if (fromVertexMap == null || toVertexMap == null) return null;
+
+        for (E edge : fromVertexMap.values()) {
+            if (toVertexMap.containsValue(edge)) return edge;
+        }
+
         return null;
     }
 
@@ -178,9 +186,11 @@ public class DirectedGraph<V extends Identifiable, E> {
      */
     public int getNumEdges() {
         // TODO calculate and return the total number of directed edges in the graph
-
-
-        return 0;
+        return (int) this.edges.values()
+                .stream()
+                .map(Map::values)
+                .distinct()
+                .count();
     }
 
     /**
