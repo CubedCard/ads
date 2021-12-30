@@ -284,7 +284,27 @@ public class DirectedGraph<V extends Identifiable, E> {
 
         // TODO calculate the path from start to target by recursive depth-first-search
 
+        // recursively calculate the paths
+        depthFirstSearchPath(start, target, path);
+
+        // check if the path was found
+        if (path.vertices.contains(start) && path.vertices.contains(target)) return path;
+
         return null;
+    }
+
+    private void depthFirstSearchPath(V vertex, V target, DGPath path) {
+        path.visited.add(vertex);
+        path.vertices.add(vertex);
+
+        if (vertex.equals(target)) return;
+
+        Collection<V> neighbours = this.getNeighbours(vertex);
+
+        neighbours
+                .stream()
+                .filter(v -> !path.visited.contains(v))
+                .forEach(v -> depthFirstSearchPath(v, target, path));
     }
 
 
@@ -316,8 +336,14 @@ public class DirectedGraph<V extends Identifiable, E> {
 
         // TODO calculate the path from start to target by breadth-first-search
 
-
-        return null;
+        return this.getNeighbours(start)
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(v -> !path.visited.contains(v))
+                .map(v -> breadthFirstSearch(v.getId(), targetId))
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
     }
 
     // helper class to register the state of a vertex in dijkstra shortest path algorithm
@@ -383,6 +409,7 @@ public class DirectedGraph<V extends Identifiable, E> {
             //  register all visited vertices while going for statistical purposes
             //  if you hit the target: complete the path and bail out !!!
 
+            nextDspNode = null;
 
             // TODO find the next nearest node that is not marked yet
 
