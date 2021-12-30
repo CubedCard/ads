@@ -293,15 +293,27 @@ public class DirectedGraph<V extends Identifiable, E> {
         return null;
     }
 
+    /**
+     * Uses a depth-first search algorithm to find a path to the target vertex in the graph
+     * All vertices that are being visited by the search should also be registered in path.visited
+     *
+     * @param vertex the vertex from which to search from
+     * @param target the vertex to be found
+     * @param path   the traveled path
+     */
     private void depthFirstSearchPath(V vertex, V target, DGPath path) {
+        // check if the vertices have a valid value
+        if (vertex == null || target == null) return;
+
+        // make sure to set the vertex as visited and add it to the path
         path.visited.add(vertex);
         path.vertices.add(vertex);
 
+        // check if the target was reached
         if (vertex.equals(target)) return;
 
-        Collection<V> neighbours = this.getNeighbours(vertex);
-
-        neighbours
+        // do the same for all valid neighbours
+        this.getNeighbours(vertex)
                 .stream()
                 .filter(v -> !path.visited.contains(v))
                 .forEach(v -> depthFirstSearchPath(v, target, path));
