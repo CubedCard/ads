@@ -339,23 +339,41 @@ public class DirectedGraph<V extends Identifiable, E> {
         // initialise the result path of the search
         DGPath path = new DGPath();
         path.visited.add(start);
+        path.vertices.addLast(target);
 
         // easy target
         if (start.equals(target)) {
-            path.vertices.add(target);
             return path;
         }
 
         // TODO calculate the path from start to target by breadth-first-search
 
-        return this.getNeighbours(start)
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(v -> !path.visited.contains(v))
-                .map(v -> breadthFirstSearch(v.getId(), targetId))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
+        Queue<V> queue = new LinkedList<>();
+        Map<V, V> visitedFromTo = new HashMap<>();
+
+        queue.offer(start);
+        visitedFromTo.put(start, null);
+
+        V current = queue.poll();
+
+        while (current != null) {
+            for (V neighbour : this.getNeighbours(current)) {
+                if (neighbour.equals(target)) {
+                    while (current != null) {
+                        path.vertices.addFirst(current);
+                        current = visitedFromTo.get(current);
+                    }
+                    return path;
+                } else if (!path.visited.contains(neighbour)) {
+                    visitedFromTo.put(neighbour, current);
+                    path.visited.add(neighbour);
+                    queue.offer(neighbour);
+                }
+            }
+            current = queue.poll();
+        }
+
+        return null;
     }
 
     // helper class to register the state of a vertex in dijkstra shortest path algorithm
