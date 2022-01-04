@@ -433,16 +433,64 @@ public class DirectedGraph<V extends Identifiable, E> {
         progressData.put(start, nextDspNode);
 
         while (nextDspNode != null) {
+            // mark the dspNode to show that the weightSumTo of this node is the smallest possible
+            nextDspNode.marked = true;
 
             // TODO continue Dijkstra's algorithm to process nextDspNode
             //  mark nodes as you complete their processing
             //  register all visited vertices while going for statistical purposes
             //  if you hit the target: complete the path and bail out !!!
 
-            nextDspNode = null;
+            // relaxing the neighbours of the vertex in nextDspNode
+            for (V neighbour : this.getNeighbours(nextDspNode.vertex)) {
+                // create a new neighbourDspNode instance of the current neighbour
+                DSPNode neighbourDspNode = new DSPNode(neighbour);
+
+                /*
+                set the weightSumTo to the weight of the neighbour dspNode (neighbourDspNode)
+                plus the weightSumTo of the next dspNode (nextDspNode)
+                 */
+                neighbourDspNode.weightSumTo = nextDspNode.weightSumTo
+                        + weightMapper.apply(this.getEdge(nextDspNode.vertex, neighbour));
+                neighbourDspNode.fromVertex = nextDspNode.vertex;
+
+//                progressData.merge(neighbour, neighbourDspNode, DSPNode::compareTo); // try to find a BiFunction to set the minimum;
+
+                /*
+                if the neighbour has already been added,
+                then check if the current weightSumTo is smaller than the one in the map
+                */
+                if (progressData.getOrDefault(neighbour, neighbourDspNode).weightSumTo >= neighbourDspNode.weightSumTo)
+                    progressData.put(neighbour, neighbourDspNode);
+                path.visited.add(neighbour);
+            }
+
+            if (nextDspNode.vertex.equals(target)) {
+                // the path from the start to the target vertex is the same as the weightSumTo of the target vertex
+                path.totalWeight = nextDspNode.weightSumTo;
+
+                /*
+                build the path by getting the fromVertex, the fromVertex of the first nextDspNode (where the
+                vertex is start) is null, so the path is found when the fromVertex is null
+                */
+                while (nextDspNode.vertex != null) {
+                    path.vertices.addFirst(nextDspNode.vertex);
+                    nextDspNode.vertex = progressData.get(nextDspNode.vertex).fromVertex;
+                }
+
+                return path;
+            }
 
             // TODO find the next nearest node that is not marked yet
-
+            /*
+            find the next nearest node that is not marked yet and has the minimum value
+            according to the compareTo of the DSPNode class
+             */
+            nextDspNode = progressData.values()
+                    .stream()
+                    .filter(dspNode -> !dspNode.marked)
+                    .min(DSPNode::compareTo)
+                    .orElse(null);
         }
 
         // no path found, graph was not connected ???
