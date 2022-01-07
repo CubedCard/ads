@@ -283,14 +283,7 @@ public class DirectedGraph<V extends Identifiable, E> {
         DGPath path = new DGPath();
 
         // TODO calculate the path from start to target by recursive depth-first-search
-
-        // recursively calculate the paths
-        depthFirstSearchPath(start, target, path);
-
-        // check if the path was found
-        if (path.vertices.contains(start) && path.vertices.contains(target)) return path;
-
-        return null;
+        return this.depthFirstSearch(start, target, path);
     }
 
     /**
@@ -301,22 +294,43 @@ public class DirectedGraph<V extends Identifiable, E> {
      * @param target the vertex to be found
      * @param path   the traveled path
      */
-    private void depthFirstSearchPath(V vertex, V target, DGPath path) {
-        // check if the vertices have a valid value
-        if (vertex == null || target == null) return;
-
+    private DGPath depthFirstSearchPath(V vertex, V target, DGPath path) {
         // make sure to set the vertex as visited and add it to the path
+        if (path.visited.contains(vertex)) return null;
         path.visited.add(vertex);
-        path.vertices.add(vertex);
 
         // check if the target was reached
-        if (vertex.equals(target)) return;
+        if (vertex.equals(target)) {
+            path.vertices.addLast(vertex);
+            return path;
+        }
 
         // do the same for all valid neighbours
-        this.getNeighbours(vertex)
+        return this.getNeighbours(vertex)
                 .stream()
-                .filter(v -> !path.visited.contains(v))
-                .forEach(v -> depthFirstSearchPath(v, target, path));
+                .map(v -> depthFirstSearch(v, target, path))
+                .filter(Objects::nonNull)
+                .findAny()
+                .orElse(null);
+    }
+
+    private DGPath depthFirstSearch(V current, V target, DGPath path) {
+        if (path.visited.contains(current)) return null;
+        path.visited.add(current);
+
+        if (current.equals(target)) {
+            path.vertices.addLast(current);
+            return path;
+        }
+
+        for (V neighbour : this.getNeighbours(current)) {
+            if (depthFirstSearch(neighbour, target, path) != null) {
+                path.vertices.addFirst(current);
+                return path;
+            }
+        }
+
+        return null;
     }
 
 
