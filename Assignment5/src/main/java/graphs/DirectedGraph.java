@@ -290,30 +290,13 @@ public class DirectedGraph<V extends Identifiable, E> {
      * Uses a depth-first search algorithm to find a path to the target vertex in the graph
      * All vertices that are being visited by the search should also be registered in path.visited
      *
-     * @param vertex the vertex from which to search from
-     * @param target the vertex to be found
-     * @param path   the traveled path
+     * @param current the vertex that is currently being visited
+     * @param target  the vertex to be found
+     * @param path    the DGPath that can eventually hold the path and the visited vertices
+     * @return the path from start to target
+     * returns null if either start or target cannot be matched with a vertex in the graph
+     * or no path can be found from start to target
      */
-    private DGPath depthFirstSearchPath(V vertex, V target, DGPath path) {
-        // make sure to set the vertex as visited and add it to the path
-        if (path.visited.contains(vertex)) return null;
-        path.visited.add(vertex);
-
-        // check if the target was reached
-        if (vertex.equals(target)) {
-            path.vertices.addLast(vertex);
-            return path;
-        }
-
-        // do the same for all valid neighbours
-        return this.getNeighbours(vertex)
-                .stream()
-                .map(v -> depthFirstSearch(v, target, path))
-                .filter(Objects::nonNull)
-                .findAny()
-                .orElse(null);
-    }
-
     private DGPath depthFirstSearch(V current, V target, DGPath path) {
         if (path.visited.contains(current)) return null;
         path.visited.add(current);
