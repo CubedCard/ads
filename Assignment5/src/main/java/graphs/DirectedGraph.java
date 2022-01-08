@@ -450,6 +450,23 @@ public class DirectedGraph<V extends Identifiable, E> {
             // mark the dspNode to show that the weightSumTo of this node is the smallest possible
             nextDspNode.marked = true;
 
+            // build and return the path when the target is marked
+            if (nextDspNode.vertex.equals(target)) {
+                // the path from the start to the target vertex is the same as the weightSumTo of the target vertex
+                path.totalWeight = nextDspNode.weightSumTo;
+
+                /*
+                build the path by getting the fromVertex, the fromVertex of the first nextDspNode (where the
+                vertex is start) is null, so the path is found when the fromVertex is null
+                */
+                while (nextDspNode.vertex != null) {
+                    path.vertices.addFirst(nextDspNode.vertex);
+                    nextDspNode.vertex = progressData.get(nextDspNode.vertex).fromVertex;
+                }
+
+                return path;
+            }
+
             // TODO continue Dijkstra's algorithm to process nextDspNode
             //  mark nodes as you complete their processing
             //  register all visited vertices while going for statistical purposes
@@ -477,22 +494,6 @@ public class DirectedGraph<V extends Identifiable, E> {
                 if (progressData.getOrDefault(neighbour, neighbourDspNode).weightSumTo >= neighbourDspNode.weightSumTo)
                     progressData.put(neighbour, neighbourDspNode);
                 path.visited.add(neighbour);
-            }
-
-            if (nextDspNode.vertex.equals(target)) {
-                // the path from the start to the target vertex is the same as the weightSumTo of the target vertex
-                path.totalWeight = nextDspNode.weightSumTo;
-
-                /*
-                build the path by getting the fromVertex, the fromVertex of the first nextDspNode (where the
-                vertex is start) is null, so the path is found when the fromVertex is null
-                */
-                while (nextDspNode.vertex != null) {
-                    path.vertices.addFirst(nextDspNode.vertex);
-                    nextDspNode.vertex = progressData.get(nextDspNode.vertex).fromVertex;
-                }
-
-                return path;
             }
 
             // TODO find the next nearest node that is not marked yet
