@@ -183,6 +183,13 @@ public class DirectedGraph<V extends Identifiable, E> {
         return this.edges.getOrDefault(fromVertex, new HashMap<>()).get(toVertex);
     }
 
+    /**
+     * retrieves the directed edge between 'fromVertex' and 'toVertex' from the graph, if any
+     *
+     * @param fromId the id of the start vertex of the designated edge
+     * @param toId   the id of the end vertex of the designated edge
+     * @return null if no connection has been set up between these vertices in the specified direction
+     */
     public E getEdge(String fromId, String toId) {
         return this.getEdge(this.vertices.get(fromId), this.vertices.get(toId));
     }
@@ -200,7 +207,7 @@ public class DirectedGraph<V extends Identifiable, E> {
      * @return the total number of edges in the graph
      */
     public int getNumEdges() {
-        // TODO calculate and return the total number of directed edges in the graph
+        // calculate and return the total number of directed edges in the graph
         return this.edges.values()
                 .stream()
                 .mapToInt(Map::size)
