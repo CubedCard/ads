@@ -178,13 +178,9 @@ public class DirectedGraph<V extends Identifiable, E> {
      */
     public E getEdge(V fromVertex, V toVertex) {
         if (fromVertex == null || toVertex == null) return null;
-        // TODO retrieve the directed edge between vertices fromVertex and toVertex from the graph
 
-        Map<V, E> fromVertexMap = this.edges.getOrDefault(fromVertex, null);
-
-        if (fromVertexMap == null) return null;
-
-        return fromVertexMap.get(toVertex);
+        // retrieve the directed edge between vertices fromVertex and toVertex from the graph, if any
+        return this.edges.getOrDefault(fromVertex, new HashMap<>()).get(toVertex);
     }
 
     public E getEdge(String fromId, String toId) {
