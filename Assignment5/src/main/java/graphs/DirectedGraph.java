@@ -67,7 +67,7 @@ public class DirectedGraph<V extends Identifiable, E> {
      * an empty collection if fromVertex has no out-going edges
      */
     public Collection<E> getEdges(V fromVertex) {
-        // check if fromVertex cannot be found in the graphget
+        // check if fromVertex cannot be found in the graph
         if (!this.edges.containsKey(fromVertex)) return null;
 
         // retrieve the collection of out-going edges which connect fromVertex with a neighbour in the edges data structure
@@ -114,14 +114,17 @@ public class DirectedGraph<V extends Identifiable, E> {
      * @return whether the edge has been added successfully
      */
     public boolean addEdge(V fromVertex, V toVertex, E newEdge) {
-        // TODO add (directed) newEdge to the graph between fromVertex and toVertex
         if (fromVertex == null || toVertex == null) return false;
+
+        // make sure the fromVertex and toVertex will be in the graphs
         fromVertex = this.addOrGetVertex(fromVertex);
         toVertex = this.addOrGetVertex(toVertex);
-        if (this.edges.get(fromVertex).containsKey(toVertex)) return false;
 
-        this.edges.get(fromVertex).put(toVertex, newEdge);
-        return true;
+        /*
+        there can only be one directed edge from fromVertex to toVertex,
+        so the edge can only be added if there was no edge before it
+        */
+        return this.edges.get(fromVertex).putIfAbsent(toVertex, newEdge) == null;
     }
 
     /**
@@ -135,7 +138,7 @@ public class DirectedGraph<V extends Identifiable, E> {
      * @return whether the edge has been added successfully
      */
     public boolean addEdge(String fromId, String toId, E newEdge) {
-        // TODO add (directed) newEdge to the graph between fromId and toId
+        // add (directed) newEdge to the graph between fromId and toId
         return this.addEdge(this.getVertexById(fromId), this.getVertexById(toId), newEdge);
     }
 
