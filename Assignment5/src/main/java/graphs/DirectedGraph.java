@@ -67,14 +67,11 @@ public class DirectedGraph<V extends Identifiable, E> {
      * an empty collection if fromVertex has no out-going edges
      */
     public Collection<E> getEdges(V fromVertex) {
-//        if (fromVertex == null || !this.edges.containsKey(fromVertex)) return null;
-        if (!this.vertices.containsValue(fromVertex)) return null;
+        // check if fromVertex cannot be found in the graphget
+        if (!this.edges.containsKey(fromVertex)) return null;
 
-        // TODO retrieve the collection of out-going edges which connect fromVertex with a neighbour in the edges data structure
-
-        if (this.edges.containsKey(fromVertex)) return this.edges.get(fromVertex).values();
-
-        return List.of();
+        // retrieve the collection of out-going edges which connect fromVertex with a neighbour in the edges data structure
+        return this.edges.getOrDefault(fromVertex, new HashMap<>()).values();
     }
 
     public Collection<E> getEdges(String fromId) {
