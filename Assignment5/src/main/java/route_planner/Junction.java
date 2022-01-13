@@ -7,10 +7,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class Junction
-    implements Identifiable
-        // TODO extend superclass and/or implement interfaces
-
-{
+    implements Identifiable {
     private String name;            // unique name of the junction
     private double locationX;       // RD x-coordinate in km
     private double locationY;       // RD y-coordinate in km
@@ -129,9 +126,5 @@ public class Junction
     public int hashCode() {
         return Objects.hash(name);
     }
-
-    // TODO more implementations as required for use with DirectedGraph, HashSet and/or HashMap
-
-
 
 }

@@ -1,7 +1,5 @@
 package graphs;
 
-import java.util.Objects;
-
 /**
  * This class is an abstract representation of a restaurant
  *

@@ -29,7 +29,7 @@ public class DirectedGraph<V extends Identifiable, E> {
     /**
      * finds the vertex in the graph identified by the given id
      *
-     * @param id
+     * @param id the String that the vertex is identified by
      * @return the vertex that matches the given id
      * null if none of the vertices matches the id
      */
@@ -41,16 +41,15 @@ public class DirectedGraph<V extends Identifiable, E> {
      * retrieves the collection of neighbour vertices that can be reached directly
      * via an out-going directed edge from 'fromVertex'
      *
-     * @param fromVertex
+     * @param fromVertex the vertex of which the neighbours should be found
      * @return null if fromVertex cannot be found in the graph
      * an empty collection if fromVertex has no neighbours
      */
     public Collection<V> getNeighbours(V fromVertex) {
         if (fromVertex == null || !this.edges.containsKey(fromVertex)) return null;
 
-        // TODO retrieve the collection of neighbour vertices of fromVertex out of the edges data structure
-
-        return this.edges.get(fromVertex).keySet();
+        // get the keys in the hashmap and return them
+        return this.edges.getOrDefault(fromVertex, new HashMap<>()).keySet();
     }
 
     public Collection<V> getNeighbours(String fromVertexId) {
@@ -62,7 +61,7 @@ public class DirectedGraph<V extends Identifiable, E> {
      * which connects the 'fromVertex' with its neighbours
      * (only the out-going edges directed from 'fromVertex' towards a neighbour shall be included
      *
-     * @param fromVertex
+     * @param fromVertex the vertex whose edges should be found
      * @return null if fromVertex cannot be found in the graph
      * an empty collection if fromVertex has no out-going edges
      */
@@ -88,11 +87,10 @@ public class DirectedGraph<V extends Identifiable, E> {
      * or newVertex itself if it has been added.
      */
     public V addOrGetVertex(V newVertex) {
-        // TODO add and return the newVertex, or return the existing duplicate vertex with the same Id
-        //  pay attention to sustaining representation invariant items 1. and 4.
-
+        // get the vertex that is/was in this spot
         V currentVertex = this.vertices.putIfAbsent(newVertex.getId(), newVertex);
 
+        // If currentVertex is null, then that means that there was no vertex with the same id as newVertex
         if (currentVertex == null) {
             this.edges.put(newVertex, new HashMap<>());
             return newVertex;
@@ -146,9 +144,9 @@ public class DirectedGraph<V extends Identifiable, E> {
      * Adds two directed edges: one from v1 to v2 and one from v2 to v1
      * both with the same edge information
      *
-     * @param v1
-     * @param v2
-     * @param newEdge
+     * @param v1      the first vertex
+     * @param v2      the second vertex
+     * @param newEdge the edge to add between the first and the second and between de second and the first
      * @return whether both edges have been added
      */
     public boolean addConnection(V v1, V v2, E newEdge) {
@@ -159,9 +157,9 @@ public class DirectedGraph<V extends Identifiable, E> {
      * Adds two directed edges: one from id1 to id2 and one from id2 to id1
      * both with the same edge information
      *
-     * @param id1
-     * @param id2
-     * @param newEdge
+     * @param id1     the id of the first vertex
+     * @param id2     the id of the second vertex
+     * @param newEdge the edge to add between the first and the second and between de second and the first
      * @return whether both edges have been added
      */
     public boolean addConnection(String id1, String id2, E newEdge) {
@@ -271,8 +269,8 @@ public class DirectedGraph<V extends Identifiable, E> {
      * Uses a depth-first search algorithm to find a path from the start vertex to the target vertex in the graph
      * All vertices that are being visited by the search should also be registered in path.visited
      *
-     * @param startId
-     * @param targetId
+     * @param startId  the id of the vertex to start the depth first search from
+     * @param targetId the id of the vertex to be found by the depth first search algorithm
      * @return the path from start to target
      * returns null if either start or target cannot be matched with a vertex in the graph
      * or no path can be found from start to target
@@ -285,7 +283,7 @@ public class DirectedGraph<V extends Identifiable, E> {
 
         DGPath path = new DGPath();
 
-        // TODO calculate the path from start to target by recursive depth-first-search
+        // calculate the path from start to target by recursive depth-first-search
         return this.depthFirstSearch(start, target, path);
     }
 
@@ -301,14 +299,17 @@ public class DirectedGraph<V extends Identifiable, E> {
      * or no path can be found from start to target
      */
     private DGPath depthFirstSearch(V current, V target, DGPath path) {
+        // the current vertex should not be visited, because the
         if (path.visited.contains(current)) return null;
         path.visited.add(current);
 
+        // we found a path if the target has been found
         if (current.equals(target)) {
             path.vertices.addLast(current);
             return path;
         }
 
+        // the target has not been found yet, so we look further
         for (V neighbour : this.getNeighbours(current)) {
             if (depthFirstSearch(neighbour, target, path) != null) {
                 path.vertices.addFirst(current);
@@ -316,6 +317,7 @@ public class DirectedGraph<V extends Identifiable, E> {
             }
         }
 
+        // this return-statement can be reached if no path was found
         return null;
     }
 
@@ -324,8 +326,8 @@ public class DirectedGraph<V extends Identifiable, E> {
      * Uses a breadth-first search algorithm to find a path from the start vertex to the target vertex in the graph
      * All vertices that are being visited by the search should also be registered in path.visited
      *
-     * @param startId
-     * @param targetId
+     * @param startId  the id of the vertex to start the breadth first search from
+     * @param targetId the id of the vertex to find with breadth first search
      * @return the path from start to target
      * returns null if either start or target cannot be matched with a vertex in the graph
      * or no path can be found from start to target
@@ -346,7 +348,7 @@ public class DirectedGraph<V extends Identifiable, E> {
             return path;
         }
 
-        // TODO calculate the path from start to target by breadth-first-search
+        // calculate the path from start to target by breadth-first-search
 
         Queue<V> queue = new LinkedList<>();
         Map<V, V> visitedFromTo = new HashMap<>();
@@ -356,6 +358,7 @@ public class DirectedGraph<V extends Identifiable, E> {
 
         V current = queue.poll();
 
+        // go through the layers of the graph to try and find the target
         while (current != null) {
             for (V neighbour : this.getNeighbours(current)) {
                 if (neighbour.equals(target)) {
@@ -453,11 +456,6 @@ public class DirectedGraph<V extends Identifiable, E> {
                 return path;
             }
 
-            // TODO continue Dijkstra's algorithm to process nextDspNode
-            //  mark nodes as you complete their processing
-            //  register all visited vertices while going for statistical purposes
-            //  if you hit the target: complete the path and bail out !!!
-
             // relaxing the neighbours of the vertex in nextDspNode
             for (V neighbour : this.getNeighbours(nextDspNode.vertex)) {
                 // create a new neighbourDspNode instance of the current neighbour
@@ -482,9 +480,8 @@ public class DirectedGraph<V extends Identifiable, E> {
                 path.visited.add(neighbour);
             }
 
-            // TODO find the next nearest node that is not marked yet
             /*
-            find the next nearest node that is not marked yet and has the minimum value
+            find the nearest node that is not marked yet and has the minimum value
             according to the compareTo of the DSPNode class
              */
             nextDspNode = progressData.values()
@@ -494,7 +491,7 @@ public class DirectedGraph<V extends Identifiable, E> {
                     .orElse(null);
         }
 
-        // no path found, graph was not connected ???
+        // no path found
         return null;
     }
 
