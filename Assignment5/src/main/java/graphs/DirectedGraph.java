@@ -114,8 +114,9 @@ public class DirectedGraph<V extends Identifiable, E> {
     public boolean addEdge(V fromVertex, V toVertex, E newEdge) {
         if (fromVertex == null || toVertex == null) return false;
 
-        // make sure the fromVertex and toVertex are in the graphs
-        if (!this.vertices.containsValue(fromVertex) || !this.vertices.containsValue(toVertex)) return false;
+        // make sure the fromVertex and toVertex will be in the graphs
+        fromVertex = this.addOrGetVertex(fromVertex);
+        toVertex = this.addOrGetVertex(toVertex);
 
         /*
         there can only be one directed edge from fromVertex to toVertex,
@@ -135,8 +136,14 @@ public class DirectedGraph<V extends Identifiable, E> {
      * @return whether the edge has been added successfully
      */
     public boolean addEdge(String fromId, String toId, E newEdge) {
+        V fromVertex = this.getVertexById(fromId);
+        V toVertex = this.getVertexById(toId);
+
+        // make sure the fromVertex and toVertex are in the graphs
+        if (fromVertex == null || toVertex == null) return false;
+
         // add (directed) newEdge to the graph between fromId and toId
-        return this.addEdge(this.getVertexById(fromId), this.getVertexById(toId), newEdge);
+        return this.addEdge(fromVertex, toVertex, newEdge);
     }
 
     /**
